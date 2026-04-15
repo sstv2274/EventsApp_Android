@@ -1,8 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">EventsApp</string>
-    <string name="login_text">LOGIN</string>
-    <string name="register_text">REGISTER</string>
-    <string name="username">Username</string>
-    <string name="password">Password</string>
-    <string name="email">Email</string>
+    <string name="btn_login">LOGIN</string>
+    <string name="btn_register">REGISTER</string>
+
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_email">Email</string>
+
+    <string name="toast_empty_fields">Popunite sva polja</string>
+    <string name="toast_wrong_credentials">Pogrešni podaci za prijavu</string>
+    <string name="welcome_text">Welcome</string>
+    <string name="default_user">admin</string>
+    <string name="no_events">No upcoming events</string>
+
+    <string name="tab_events">EVENTS</string>
+    <string name="tab_my_events">MY EVENTS</string>
+    <string name="tab_friends">FRIENDS</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="btn_interested">INTERESTED EVENTS</string>
+    <string name="btn_attending">ATTENDING EVENTS</string>
+    <string name="btn_profile">MY PROFILE</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_interested">Interested Events</string>
+    <string name="title_attending">Attending Events</string>
 </resources>

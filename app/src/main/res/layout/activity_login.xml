@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/llInitialButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <Button
+            android:id="@+id/btnInitialLogin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/btn_login"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/purple_button" />
+
+        <Button
+            android:id="@+id/btnInitialRegister"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/btn_register"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/purple_button" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llLoginForm"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="0.15" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <View android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="0.05" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.9"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+                <EditText
+                    android:id="@+id/etLoginUsername"
+                    style="@style/Widget.AppCompat.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:hint="@string/hint_username"
+                    android:inputType="text"
+                    android:textColorHint="@color/text_hint"
+                    android:backgroundTint="@color/text_hint" />
+
+                <View android:layout_width="match_parent" android:layout_height="10dp" />
+
+                <EditText
+                    android:id="@+id/etLoginPassword"
+                    style="@style/Widget.AppCompat.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_password"
+                    android:textColor="@color/black"
+                    android:inputType="textPassword"
+                    android:textColorHint="@color/text_hint"
+                    android:backgroundTint="@color/text_hint" />
+
+                <View android:layout_width="match_parent" android:layout_height="25dp" />
+
+                <Button
+                    android:id="@+id/btnSubmitLogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_login"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/purple_button" />
+
+            </LinearLayout>
+
+            <View android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="0.05" />
+        </LinearLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1.5" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llRegisterForm"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="0.15" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <View android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="0.05" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.9"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/hint_username"
+                        android:textSize="16sp"
+                        android:textColor="@color/text_hint" />
+                    <EditText
+                        android:id="@+id/etRegUsername"
+                        style="@style/Widget.AppCompat.EditText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:layout_weight="1"
+                        android:hint="@string/hint_username"
+                        android:inputType="text"
+                        android:textColorHint="@color/text_hint"
+                        android:backgroundTint="@color/text_hint" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="10dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/hint_email"
+                        android:textSize="16sp"
+                        android:textColor="@color/text_hint" />
+                    <EditText
+                        android:id="@+id/etRegEmail"
+                        style="@style/Widget.AppCompat.EditText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:layout_weight="1"
+                        android:hint="@string/hint_email"
+                        android:inputType="textEmailAddress"
+                        android:textColorHint="@color/text_hint"
+                        android:backgroundTint="@color/text_hint" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="10dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/hint_password"
+                        android:textSize="16sp"
+                        android:textColor="@color/text_hint" />
+                    <EditText
+                        android:id="@+id/etRegPassword"
+                        style="@style/Widget.AppCompat.EditText"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:layout_weight="1"
+                        android:hint="@string/hint_password"
+                        android:inputType="textPassword"
+                        android:textColorHint="@color/text_hint"
+                        android:backgroundTint="@color/text_hint" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="25dp" />
+
+                <Button
+                    android:id="@+id/btnSubmitRegister"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_register"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/purple_button" />
+
+            </LinearLayout>
+
+            <View android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="0.05" />
+        </LinearLayout>
+
+        <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1.5" />
+    </LinearLayout>
+
+</LinearLayout>
