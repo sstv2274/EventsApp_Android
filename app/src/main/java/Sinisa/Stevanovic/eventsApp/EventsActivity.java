@@ -10,45 +10,39 @@ import androidx.fragment.app.FragmentTransaction;
 
 public class EventsActivity extends AppCompatActivity {
 
-    private TextView tvUsername;
-    private Button btnNavEvents, btnNavMyEvents;
+    private TextView Username;
+    private Button Iventovi, MojiIventovi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
 
-        // Mapiranje UI elemenata
-        tvUsername = findViewById(R.id.tvUsername);
-        btnNavEvents = findViewById(R.id.btnNavEvents);
-        btnNavMyEvents = findViewById(R.id.btnNavMyEvents);
+        Username = findViewById(R.id.tvUsername);
+        Iventovi = findViewById(R.id.btnNavEvents);
+        MojiIventovi = findViewById(R.id.btnNavMyEvents);
 
-        // Preuzimanje podataka iz LoginActivity-ja
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             String dobijeniUsername = bundle.getString("USERNAME");
             if (dobijeniUsername != null && !dobijeniUsername.isEmpty()) {
-                tvUsername.setText(dobijeniUsername);
+                Username.setText(dobijeniUsername);
             }
         }
 
-        // ZAHTEV: Podrazumevano se pri pokretanju prikazuje EventsFragment
         if (savedInstanceState == null) {
             ucitajFragment(new EventsFragment());
         }
 
-        // Akcija za donje dugme "EVENTS"
-        btnNavEvents.setOnClickListener(v -> {
+        Iventovi.setOnClickListener(v -> {
             ucitajFragment(new EventsFragment());
         });
 
-        // Akcija za donje dugme "MY EVENTS" (Učitava novi MyEventsFragment)
-        btnNavMyEvents.setOnClickListener(v -> {
+        MojiIventovi.setOnClickListener(v -> {
             ucitajFragment(new MyEventsFragment());
         });
     }
 
-    // Pomoćna metoda za zamenu fragmenta
     private void ucitajFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

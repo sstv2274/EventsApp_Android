@@ -11,9 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private LinearLayout llInitialButtons, llLoginForm, llRegisterForm;
+    private LinearLayout Buttons, LoginForm, RegisterForm;
     private Button btnInitialLogin, btnInitialRegister, btnSubmitLogin, btnSubmitRegister;
-    private EditText etLoginUsername, etLoginPassword;
+    private EditText LoginUsername, LoginPassword;
     private EditText etRegUsername, etRegEmail, etRegPassword;
 
     @Override
@@ -22,40 +22,34 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         // Mapiranje UI elemenata
-        llInitialButtons = findViewById(R.id.llInitialButtons);
-        llLoginForm = findViewById(R.id.llLoginForm);
-        llRegisterForm = findViewById(R.id.llRegisterForm);
+        Buttons = findViewById(R.id.llInitialButtons);
+        LoginForm = findViewById(R.id.llLoginForm);
+        RegisterForm = findViewById(R.id.llRegisterForm);
 
         btnInitialLogin = findViewById(R.id.btnInitialLogin);
         btnInitialRegister = findViewById(R.id.btnInitialRegister);
         btnSubmitLogin = findViewById(R.id.btnSubmitLogin);
         btnSubmitRegister = findViewById(R.id.btnSubmitRegister);
 
-        etLoginUsername = findViewById(R.id.etLoginUsername);
-        etLoginPassword = findViewById(R.id.etLoginPassword);
+        LoginUsername = findViewById(R.id.etLoginUsername);
+        LoginPassword = findViewById(R.id.etLoginPassword);
 
         etRegUsername = findViewById(R.id.etRegUsername);
         etRegEmail = findViewById(R.id.etRegEmail);
         etRegPassword = findViewById(R.id.etRegPassword);
-
-        // Prebacivanje na Login formu
+        //Prebacivanje na Log
         btnInitialLogin.setOnClickListener(v -> {
-            llInitialButtons.setVisibility(View.GONE);
-            llLoginForm.setVisibility(View.VISIBLE);
+            Buttons.setVisibility(View.GONE);
+            LoginForm.setVisibility(View.VISIBLE);
         });
-
-        // Prebacivanje na Register formu
+        //Prebacivanje na reg
         btnInitialRegister.setOnClickListener(v -> {
-            llInitialButtons.setVisibility(View.GONE);
-            llRegisterForm.setVisibility(View.VISIBLE);
+            Buttons.setVisibility(View.GONE);
+            RegisterForm.setVisibility(View.VISIBLE);
         });
-
-        // Akcija za potvrdu Logina
         btnSubmitLogin.setOnClickListener(v -> {
-            String username = etLoginUsername.getText().toString();
-            String password = etLoginPassword.getText().toString();
-
-            // Dopušten ugrađen (predefinisan) korisnik
+            String username = LoginUsername.getText().toString();
+            String password = LoginPassword.getText().toString();
             if (username.equals("admin") && password.equals("admin")) {
                 prelazNaEventsActivity(username, "");
             } else {
@@ -63,7 +57,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        // Akcija za potvrdu Registracije
         btnSubmitRegister.setOnClickListener(v -> {
             String username = etRegUsername.getText().toString();
             String email = etRegEmail.getText().toString();

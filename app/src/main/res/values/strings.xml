@@ -32,4 +32,13 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="title_interested">Interested Events</string>
     <string name="title_attending">Attending Events</string>
+    <string name="default_username">admin</string>
+    <string name="default_email">admin@gmail.com</string>
+    <string name="btn_password">PASSWORD</string>
+    <string name="btn_end_session">END SESSION</string>
+    <string name="title_change_password">Change password</string>
+    <string name="hint_current_password">Current password</string>
+    <string name="hint_new_password">New password</string>
+    <string name="btn_save">SAVE</string>
+    <string name="toast_password_changed">Lozinka je uspešno promenjena!</string>
 </resources>
