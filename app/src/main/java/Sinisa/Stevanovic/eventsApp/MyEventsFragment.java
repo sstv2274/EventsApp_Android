@@ -53,4 +53,3 @@ public class MyEventsFragment extends Fragment {
         return view;
     }
 }
-//a
