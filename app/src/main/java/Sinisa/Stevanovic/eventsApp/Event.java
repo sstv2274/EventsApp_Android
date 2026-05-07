@@ -67,7 +67,7 @@ public class Event {
                 return eventDate.before(currentDate);
             }
         } catch (ParseException e) {
-            e.printStackTrace();//ispisuje gresku u konzolu. Ako dodam proveru pri unosenju datuma mogu ukloniti try/catch format.
+            e.printStackTrace();//!!//ispisuje gresku u konzolu. Ako dodam proveru pri unosenju datuma mogu ukloniti try/catch format.
         }
         return false;
     }
