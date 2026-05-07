@@ -17,35 +17,34 @@ public class AppData {
     //Staticka inicijalizacija pocetnih listi
     static {
         // Kreiram 18 dogadjaja uz pomoc EventFactory
-        //!!// Koristimo 0 za imageResId kao placeholder dok ne ubacim prave slike
 
         // Pecanje
-        Event e1 = EventFactory.createPromotedEvent("Klen fishing Cup Loznica", "Varalicarenje klena", "Mali Zvornik, Drina", "20/06/2026 05:00", "Fishing", 0, 65);
-        Event e2 = EventFactory.createRegularEvent("Smudjarenje Zimi", "Dzigovanje smudja u ranoj zimi", "Futog,Dunav", "15/12/2025 07:00", "Fishing", 0); // Prosao
-        Event e3 = EventFactory.createRegularEvent("Skobaljijada Loznica", "Uzivanje na Drini", "Loznica,Drina, Zicina plaza", "10/06/2026 06:00", "Fishing", 0);
+        Event e1 = EventFactory.createPromotedEvent("Klen fishing Cup Loznica", "Varalicarenje klena", "Mali Zvornik, Drina", "20/06/2026 05:00", "Fishing", R.drawable.klen_cup_loznica, 65);
+        Event e2 = EventFactory.createRegularEvent("Zimsko Smudjarenje Cup  ", "Dzigovanje smudja u ranoj zimi", "Futog,Dunav", "15/12/2025 07:00", "Fishing", R.drawable.zimsko_smudjarenje); // Prosao
+        Event e3 = EventFactory.createRegularEvent("Skobaljijada Loznica", "Uzivanje na Drini", "Loznica,Drina, Zicina plaza", "10/06/2026 06:00", "Fishing", R.drawable.skobaljijada_loznica);
 
         // Na Pivo
-        Event e4 = EventFactory.createRegularEvent("Rostilj i pivo u Velikoj reci", "Pecanje i odmor", "Vikendica na Drini", "01/05/2026 10:00", "NaPivo", 0); // Prosao
-        Event e5 = EventFactory.createRegularEvent("Beer fest", "Testiranje piva", "Novi Sad,Master hala Novosadskog sajma", "15/05/2026 18:00", "NaPivo", 0);
-        Event e6 = EventFactory.createRegularEvent("Degustacija Krafta", "Proba novih piva", "Pivoteka 77", "20/05/2026 20:00", "NaPivo", 0);
-        Event e7 = EventFactory.createPromotedEvent("Oktoberfest NS", "Veliki festival piva", "Novosadski sajam, Master hala Novosadskog sajma", "10/10/2026 12:00", "NaPivo", 0, 5000);
+        Event e4 = EventFactory.createRegularEvent("Rostilj i pivo u Velikoj reci", "Pecanje i odmor", "Vikendica na Drini", "01/05/2026 10:00", "NaPivo", R.drawable.velika_reka); // Prosao
+        Event e5 = EventFactory.createRegularEvent("Beer fest", "Testiranje piva", "Novi Sad,Master hala Novosadskog sajma", "15/05/2026 18:00", "NaPivo", R.drawable.beer_fest);
+        Event e6 = EventFactory.createRegularEvent("Degustacija Krafta", "Proba novih piva", "Pivoteka 77", "20/05/2026 20:00", "NaPivo", R.drawable.kraft_piva);
+        Event e7 = EventFactory.createPromotedEvent("Oktoberfest NS", "Veliki festival piva", "Novosadski sajam, Master hala Novosadskog sajma", "10/10/2026 12:00", "NaPivo", R.drawable.novosadski_oktobarfest, 5000);
 
         //Zurke
-        Event e8 = EventFactory.createRegularEvent("Brucosijada", "Zurka", "Dva Galeba", "15/10/2030 22:00", "Party", 0);
-        Event e9 = EventFactory.createRegularEvent("Apsolventsko vece", "Proslava kraja studija", "Hotel Zvezda", "10/06/2027 21:00", "Party", 0);
-        Event e10 = EventFactory.createRegularEvent("Gustiranje Duskove rakije", "Uzivo Sejo kalac i Minela", "Djukin stan", "25/05/2026 20:30", "Party", 0);
-        Event e11 = EventFactory.createRegularEvent("Zurka 80-te", "Jaka muzika", "Gerila", "20/07/2026 21:00", "Party", 0);
+        Event e8 = EventFactory.createRegularEvent("Brucosijada", "Zurka", "Dva Galeba", "15/10/2030 22:00", "Party", R.drawable.brucosijada);
+        Event e9 = EventFactory.createRegularEvent("Apsolventsko vece", "Proslava kraja studija", "Hotel Zvezda", "10/06/2027 21:00", "Party", R.drawable.apsolventsko_vece);
+        Event e10 = EventFactory.createRegularEvent("Gustiranje Duskove rakije", "Uzivo Sejo kalac i Minela", "Djukin stan", "25/05/2026 20:30", "Party", R.drawable.duskova_rakija);
+        Event e11 = EventFactory.createRegularEvent("Zurka 80-te", "Jaka muzika", "Gerila", "20/07/2026 21:00", "Party", R.drawable.zurka_80_te);
 
         // Festivali
-        Event e12 = EventFactory.createPromotedEvent("EXIT Festival", "Najveći muzički festival", "Petrovaradinska tvrđava", "09/07/2026 20:00", "Festival", 0, 40000);
-        Event e13 = EventFactory.createRegularEvent("Beer Fest 2025", "Beogradski festival piva", "Ušće", "15/08/2025 18:00", "Festival", 0); // Prosao
-        Event e14 = EventFactory.createRegularEvent("Arsenal Fest", "Festival u Kragujevcu", "Knežev arsenal", "25/06/2026 19:00", "Festival", 0);
-        Event e15 = EventFactory.createRegularEvent("LoveFest", "Festival elektronske muzike", "Vrnjačka Banja", "05/03/2026 20:00", "Festival", 0);// Prosao
+        Event e12 = EventFactory.createPromotedEvent("EXIT Festival", "Najveći muzički festival", "Petrovaradinska tvrđava", "09/07/2026 20:00", "Festival", R.drawable.exit, 40000);
+        Event e13 = EventFactory.createRegularEvent("Beer Fest 2025", "Beogradski festival piva", "Ušće", "15/08/2025 18:00", "Festival", R.drawable.beer_fest2025); // Prosao
+        Event e14 = EventFactory.createRegularEvent("Arsenal Fest", "Festival u Kragujevcu", "Knežev arsenal", "25/06/2026 19:00", "Festival", R.drawable.arsenal_fest);
+        Event e15 = EventFactory.createRegularEvent("LoveFest", "Festival elektronske muzike", "Vrnjačka Banja", "05/03/2026 20:00", "Festival", R.drawable.love_fest);// Prosao
 
         // Koncerti
-        Event e16 = EventFactory.createRegularEvent("Posledni program tvog kompjutera", "Oprostajni kocnert DENIS&DENIS", "SKC Fabrika", "21/03/2026 21:00", "Concert", 0);//Prosao
-        Event e17 = EventFactory.createPromotedEvent("Bajaga i Instruktori", "Mid", "Spens", "30/05/2026 21:00", "Concert", 0, 10000);
-        Event e18 = EventFactory.createRegularEvent("Tap011", "Negde u daljini jedna reka protice", "Plato Tekstila", "05/05/2026 21:00", "Concert", 0);
+        Event e16 = EventFactory.createRegularEvent("Posledni program tvog kompjutera", "Oprostajni kocnert DENIS&DENIS", "SKC Fabrika", "21/03/2026 21:00", "Concert", R.drawable.poslednji_program);//Prosao
+        Event e17 = EventFactory.createPromotedEvent("Bajaga i Instruktori", "Mid", "Spens", "30/05/2026 21:00", "Concert", R.drawable.bajaga, 10000);
+        Event e18 = EventFactory.createRegularEvent("Tap011", "Negde u daljini jedna reka protice", "Plato Tekstila", "05/05/2026 21:00", "Concert", R.drawable.tap011);
 
         allEvents.add(e1);
         allEvents.add(e2);

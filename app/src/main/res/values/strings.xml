@@ -41,4 +41,17 @@
     <string name="hint_new_password">New password</string>
     <string name="btn_save">SAVE</string>
     <string name="toast_password_changed">Lozinka je uspešno promenjena!</string>
+    <string name="featured_badge">FEATURED</string>
+    <string name="free_spots_format">Slobodnih mesta: %1$d/%2$d</string>
+    <string name="btn_add_event">DODAJ EVENT</string>
+    <string-array name="event_categories">
+        <item>SVE</item>
+        <item>FISHING</item>
+        <item>NAPIVO</item>
+        <item>PARTY</item>
+        <item>FESTIVAL</item>
+        <item>CONCERT</item>
+    </string-array>
+    <string name="toast_clicked_event">Kliknuo si: </string>
+    <string name="toast_add_event_transition">Prelaz na dodavanje eventa</string>
 </resources>

@@ -1,19 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EventsFragment"
-    android:gravity="center"
-    >
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:weightSum="100">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        android:scrollbars="none">
 
-        android:text="@string/no_events"
-        android:textSize="16sp"
-        android:textColor="@color/black" />
+        <LinearLayout
+            android:id="@+id/llCategoryFilters"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="2"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        android:orientation="horizontal"
+        android:weightSum="100">
+
+        <View android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="5"/>
+
+        <Button
+            android:id="@+id/btnAddEvent"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="90"
+            android:text="@string/btn_add_event"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/purple_button"/>
+
+        <View android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="5"/>
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="2"/>
+
+    <ListView
+        android:id="@+id/lvEvents"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="80"
+        android:divider="@color/line_color"
+        android:dividerHeight="1dp" />
 
 </LinearLayout>

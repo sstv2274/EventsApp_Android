@@ -16,4 +16,5 @@
     <color name="text_dark_gray">#757575</color>
     <color name="button_gray">#BDBDBD</color>
     <color name="line_color">#000000</color>
+    <color name="promoted_background">#FFF3E0</color>
 </resources>
