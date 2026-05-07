@@ -13,7 +13,7 @@ public class Event {
     private String description;
     private String location;
     private String dateTime;
-    private String category;//moguce vrednsoti: Party, Festival, Stand-up & Theatar, Concert, Exhibition
+    private String category;//moguce vrednsoti: Party, Festival, NaPivo, Concert, Fishing
     private int imageResId;
     private boolean isPromoted;
     private int capacity;
