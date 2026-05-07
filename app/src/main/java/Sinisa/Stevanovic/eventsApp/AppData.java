@@ -89,8 +89,6 @@ public class AppData {
     public static List<Event> getSortedEvents() {
         List<Event> sortedList = new ArrayList<>(allEvents);
 
-        List<Event> allSorted = getSortedEvents();
-
         Collections.sort(sortedList, new Comparator<Event>() {
             @Override
             public int compare(Event e1, Event e2) {
