@@ -70,13 +70,13 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    // Prenošenje podataka uz pomoć Intenta i Bundle objekta (zahtev iz 1. slike)
-    private void prelazNaEventsActivity(String username, String email) {
-        Intent intent = new Intent(LoginActivity.this, EventsActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("USERNAME", username);
-        bundle.putString("EMAIL", email);
-        intent.putExtras(bundle);
-        startActivity(intent);
+    // Prenošenje podataka uz pomoć Intenta i Bundle objekta
+        private void prelazNaEventsActivity(String username, String email) {
+            Intent intent = new Intent(LoginActivity.this, EventsActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("USERNAME", username);
+            bundle.putString("EMAIL", email);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
     }
-}
