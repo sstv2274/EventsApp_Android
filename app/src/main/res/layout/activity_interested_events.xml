@@ -3,15 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
     android:background="@color/white">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/title_interested"
+        android:id="@+id/tvEmptyInterested"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/empty_interested_events"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/text_dark_gray" />
+        android:textColor="@color/text_dark_gray"
+        android:visibility="gone" />
+
+    <ListView
+        android:id="@+id/lvInterestedEvents"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@color/line_color"
+        android:dividerHeight="1dp" />
 
 </LinearLayout>

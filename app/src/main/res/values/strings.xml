@@ -54,4 +54,11 @@
     </string-array>
     <string name="toast_clicked_event">Kliknuo si: </string>
     <string name="toast_add_event_transition">Prelaz na dodavanje eventa</string>
+    <string name="rating_format">Prosečna ocena: %1$.1f (%2$d ocena)</string>
+    <string name="no_rating">Još uvek nema ocena</string>
+    <string name="btn_interested_text">INTERESTED</string>
+    <string name="btn_attending_text">ATTENDING</string>
+    <string name="toast_added_interested">Dodat u zainteresovane.</string>
+    <string name="toast_added_attending">Prijavili ste se na događaj.</string>
+    <string name="empty_interested_events">Nemate zainteresovanih događaja</string>
 </resources>

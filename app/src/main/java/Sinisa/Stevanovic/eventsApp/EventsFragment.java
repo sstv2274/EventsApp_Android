@@ -44,16 +44,14 @@
             eventAdapter = new EventAdapter(getActivity(), initialEvents);
             lvEvents.setAdapter(eventAdapter);
 
-            //!!// Postavljam klik na listu, za pocetak samo toast poruka.
+            //Postavljam klik na listu
             lvEvents.setOnItemClickListener((parent, view1, position, id) -> {
-                Event selectedEvent = (Event) eventAdapter.getItem(position);//Izvlacimo event uz pomoc pozicije
-                String toastMsg = getString(R.string.toast_clicked_event) + selectedEvent.getName();//taoast poruka
-                Toast.makeText(getActivity(), toastMsg, Toast.LENGTH_SHORT).show();//ispisavanje toast poruke
+                Event selectedEvent = (Event) eventAdapter.getItem(position);
 
-                // TODO: Kad napravimo formu:
-                // Intent intent = new Intent(getActivity(), EventDetailsActivity.class);
-                // intent.putExtra("EVENT_NAME", selectedEvent.getName());
-                // startActivity(intent);
+                // Prelaz na formu sa detaljima i slanje imena događaja
+                Intent intent = new Intent(getActivity(), EventDetailsActivity.class);
+                intent.putExtra("EVENT_NAME", selectedEvent.getName());
+                startActivity(intent);
             });
 
             //Samo iskoci toast kad stisnemo na AddEvent

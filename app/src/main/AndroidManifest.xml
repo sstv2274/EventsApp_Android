@@ -25,6 +25,7 @@
         <activity android:name=".InterestedEventsActivity" />
         <activity android:name=".AttendingEventsActivity" />
         <activity android:name=".ProfileActivity" />
+        <activity android:name=".EventDetailsActivity" />
     </application>
 
 </manifest>
