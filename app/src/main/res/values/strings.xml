@@ -65,4 +65,8 @@
     <string name="header_upcoming">Predstojeći događaji</string>
     <string name="header_past">Prošli događaji</string>
     <string name="btn_rate">OCENI</string>
+    <string name="title_rate_event">Oceni događaj</string>
+    <string name="btn_confirm_rating">POTVRDI OCENU</string>
+    <string name="toast_select_rating">Odaberite ocenu pre potvrde.</string>
+    <string name="toast_rating_saved">Ocena je sačuvana.</string>
 </resources>

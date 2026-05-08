@@ -1,9 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RatingActivity">
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:padding="20dp"
+    android:weightSum="100">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_rate_event"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_dark_gray" />
+
+    <TextView
+        android:id="@+id/tvRatingEventName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/text_dark_gray" />
+
+    <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="15" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="100">
+
+        <View android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"/>
+
+        <ImageView
+            android:id="@+id/star1"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="18"
+            android:scaleType="fitCenter"
+            android:src="@drawable/star_empty" />
+        <ImageView
+        android:id="@+id/star2"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="18"
+        android:scaleType="fitCenter"
+        android:src="@drawable/star_empty" />
+
+        <ImageView
+            android:id="@+id/star3"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="18"
+            android:scaleType="fitCenter"
+            android:src="@drawable/star_empty" />
+
+        <ImageView
+            android:id="@+id/star4"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="18"
+            android:scaleType="fitCenter"
+            android:src="@drawable/star_empty" />
+
+        <ImageView
+            android:id="@+id/star5"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="18"
+            android:scaleType="fitCenter"
+            android:src="@drawable/star_empty" />
+
+        <View android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="5"/>
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="15" />
+
+    <Button
+        android:id="@+id/btnConfirmRating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_confirm_rating"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/purple_button" />
+
+    <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="55" />
+
+</LinearLayout>

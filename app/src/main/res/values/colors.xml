@@ -17,4 +17,6 @@
     <color name="button_gray">#BDBDBD</color>
     <color name="line_color">#000000</color>
     <color name="promoted_background">#FFF3E0</color>
+    <color name="star_active">#FFC107</color>
+    <color name="star_inactive">#E0E0E0</color>
 </resources>
