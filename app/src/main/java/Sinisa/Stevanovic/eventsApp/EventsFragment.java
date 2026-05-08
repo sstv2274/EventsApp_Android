@@ -54,13 +54,10 @@
                 startActivity(intent);
             });
 
-            //Samo iskoci toast kad stisnemo na AddEvent
+            //Menja se aktivity i cuva se intent
             btnAddEvent.setOnClickListener(v -> {
-                Toast.makeText(getActivity(), R.string.toast_add_event_transition, Toast.LENGTH_SHORT).show();
-
-                // TODO: Kad napravimo formu:
-                // Intent intent = new Intent(getActivity(), CreateEventActivity.class);
-                // startActivity(intent);
+                Intent intent = new Intent(getActivity(), CreateEventActivity.class);
+                startActivity(intent);
             });
 
             setupCategoryButtons();
@@ -130,6 +127,25 @@
                 llCategoryFilters.addView(btn);
 
 
+            }
+        }
+        @Override
+        public void onResume() {
+            super.onResume();
+            if (eventAdapter != null) {
+                // ucitavam sve dogadjaje
+                eventAdapter.setEvents(AppData.getSortedEvents());
+
+                // I vracam dugmetu SVE da bude crno
+                if (categoryButtons != null && categoryButtons.length > 0) {
+                    for (int i = 0; i < categoryButtons.length; i++) {
+                        if (i == 0) {
+                            categoryButtons[i].setBackground(getRoundedShape(R.color.purple_button));
+                        } else {
+                            categoryButtons[i].setBackground(getRoundedShape(R.color.black));
+                        }
+                    }
+                }
             }
         }
     }

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <EditText
+        android:id="@+id/etEventName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/text_dark_gray"
+        android:hint="@string/hint_event_name"
+        android:inputType="text"
+        android:textColor="@color/black"
+        android:textColorHint="@color/text_dark_gray" />
+
+
+
+    <EditText
+        android:id="@+id/etEventDesc"
+        android:layout_width="match_parent"
+        android:layout_height="60sp"
+        android:backgroundTint="@color/text_dark_gray"
+        android:hint="@string/hint_event_desc"
+        android:inputType="text"
+        android:textColor="@color/black"
+        android:textColorHint="@color/text_dark_gray" />
+
+
+
+    <EditText
+        android:id="@+id/etEventLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/text_dark_gray"
+        android:hint="@string/hint_event_location"
+        android:inputType="text"
+        android:textColor="@color/black"
+        android:textColorHint="@color/text_dark_gray" />
+
+
+
+    <EditText
+        android:id="@+id/etEventDateTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/text_dark_gray"
+        android:hint="@string/hint_event_datetime"
+        android:inputType="text"
+        android:textColor="@color/black"
+        android:textColorHint="@color/text_dark_gray" />
+
+
+    <Spinner
+        android:id="@+id/spinnerCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/text_dark_gray"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
+        android:spinnerMode="dropdown"
+        tools:listitem="@android:layout/simple_spinner_item"
+        xmlns:tools="http://schemas.android.com/tools" />
+
+
+    <CheckBox
+        android:id="@+id/cbPromoted"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cb_promoted_event"
+        android:textColor="@color/black" />
+
+
+
+    <EditText
+        android:id="@+id/etCapacity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/text_dark_gray"
+        android:hint="@string/hint_event_capacity"
+        android:inputType="number"
+        android:textColor="@color/black"
+        android:textColorHint="@color/text_dark_gray"
+        android:visibility="gone" />
+
+
+    <Button
+        android:id="@+id/btnCreateEvent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/purple_button"
+        android:text="@string/btn_create_event"
+        android:textColor="@color/white" />
+
+</LinearLayout>

@@ -69,4 +69,24 @@
     <string name="btn_confirm_rating">POTVRDI OCENU</string>
     <string name="toast_select_rating">Odaberite ocenu pre potvrde.</string>
     <string name="toast_rating_saved">Ocena je sačuvana.</string>
+    <string name="hint_event_name">Naziv događaja</string>
+    <string name="hint_event_desc">Opis</string>
+    <string name="hint_event_location">Lokacija</string>
+    <string name="hint_event_datetime">dd.MM.yyyy HH:mm</string>
+    <string name="cb_promoted_event">Promoted event</string>
+    <string name="hint_event_capacity">Kapacitet</string>
+    <string name="toast_required_fields">Popunite sva obavezna polja.</string>
+    <string name="toast_invalid_capacity">Unesite ispravan kapacitet.</string>
+    <string name="toast_event_created">Događaj uspešno kreiran.</string>
+    <string name="btn_create_event">KREIRAJ EVENT</string>
+    <string-array name="create_event_categories">
+        <item>Fishing</item>
+        <item>NaPivo</item>
+        <item>Party</item>
+        <item>Festival</item>
+        <item>Concert</item>
+    </string-array>
+    <string name="spinner_hint">Izaberite kategoriju</string>
+    <string name="toast_select_category">Odaberite kategoriju događaja.</string>
+    <string name="toast_invalid_date_format">Datum nije unet u dobrom formatu (dd.MM.yyyy HH:mm).</string>
 </resources>

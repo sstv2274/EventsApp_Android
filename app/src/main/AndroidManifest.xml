@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EventsApp">
         <activity
+            android:name=".CreateEventActivity"
+            android:exported="false" />
+        <activity
             android:name=".RatingActivity"
             android:exported="false" />
         <activity
