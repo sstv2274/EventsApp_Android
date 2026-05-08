@@ -61,4 +61,8 @@
     <string name="toast_added_interested">Dodat u zainteresovane.</string>
     <string name="toast_added_attending">Prijavili ste se na događaj.</string>
     <string name="empty_interested_events">Nemate zainteresovanih događaja</string>
+    <string name="empty_attending_events">Nemate prijavljenih događaja</string>
+    <string name="header_upcoming">Predstojeći događaji</string>
+    <string name="header_past">Prošli događaji</string>
+    <string name="btn_rate">OCENI</string>
 </resources>
