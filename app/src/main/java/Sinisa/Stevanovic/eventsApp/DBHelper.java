@@ -51,6 +51,17 @@ public class DBHelper extends SQLiteOpenHelper {
                     "UNIQUE(userId, eventId)" +
                     ");";
 
+    private static final String CREATE_TABLE_RATINGS =
+            "CREATE TABLE ratings (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "userId INTEGER NOT NULL, " +
+                    "eventId INTEGER NOT NULL, " +
+                    "rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5), " +
+                    "FOREIGN KEY(userId) REFERENCES users(id), " +
+                    "FOREIGN KEY(eventId) REFERENCES events(id), " +
+                    "UNIQUE(userId, eventId)" +
+                    ");";
+
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -61,6 +72,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_USERS);
         db.execSQL(CREATE_TABLE_EVENTS);
         db.execSQL(CREATE_TABLE_ATTENDANCE);
+        db.execSQL(CREATE_TABLE_RATINGS);
 
         addInitialEvents(db);
     }
@@ -70,6 +82,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS users");
         db.execSQL("DROP TABLE IF EXISTS events");
         db.execSQL("DROP TABLE IF EXISTS attendance");
+        db.execSQL("DROP TABLE IF EXISTS ratings");
         onCreate(db);
     }
 
@@ -394,5 +407,82 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         db.close();
         return eventList;
+    }
+
+    public boolean handleRating(int userId, String eventName, int ratingValue) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        //Prvo pronalazim id
+        Cursor eventCursor = db.query("events", new String[]{"id"}, "naziv=?", new String[]{eventName}, null, null, null);
+        if (eventCursor == null || !eventCursor.moveToFirst()) {
+            if (eventCursor != null) eventCursor.close();
+            db.close();
+            return false;
+        }
+        int eventId = eventCursor.getInt(eventCursor.getColumnIndexOrThrow("id"));
+        eventCursor.close();
+
+       //Provera da li je vec ocenio dogadjaj
+        Cursor ratingCursor = db.query("ratings", new String[]{"id"}, "userId=? AND eventId=?",
+                new String[]{String.valueOf(userId), String.valueOf(eventId)}, null, null, null);
+
+        if (ratingCursor != null && ratingCursor.moveToFirst()) {
+            // Ako je vec ocenjivano onda samo radimo update
+            ContentValues values = new ContentValues();
+            values.put("rating", ratingValue);
+            db.update("ratings", values, "userId=? AND eventId=?", new String[]{String.valueOf(userId), String.valueOf(eventId)});
+            ratingCursor.close();
+        } else {
+            // Nije ocenjivao tako da radimo insert
+            ContentValues values = new ContentValues();
+            values.put("userId", userId);
+            values.put("eventId", eventId);
+            values.put("rating", ratingValue);
+            db.insert("ratings", null, values);
+            if (ratingCursor != null) ratingCursor.close();
+        }
+
+        // Preracunavanje proseka
+        Cursor statsCursor = db.rawQuery("SELECT COUNT(*), AVG(rating) FROM ratings WHERE eventId = ?", new String[]{String.valueOf(eventId)});
+        if (statsCursor != null && statsCursor.moveToFirst()) {
+            int brojOcena = statsCursor.getInt(0);
+            double prosecnaOcena = statsCursor.getDouble(1);
+            statsCursor.close();
+
+            //azuriranje tabele
+            ContentValues eventValues = new ContentValues();
+            eventValues.put("brojOcena", brojOcena);
+            eventValues.put("prosecnaOcena", prosecnaOcena);
+            db.update("events", eventValues, "id = ?", new String[]{String.valueOf(eventId)});
+        }
+
+        db.close();
+        return true;
+    }
+
+    public int getUserRatingForEvent(int userId, String eventName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        //trazimo id iventa
+        Cursor eventCursor = db.query("events", new String[]{"id"}, "naziv=?", new String[]{eventName}, null, null, null);
+        if (eventCursor == null || !eventCursor.moveToFirst()) {
+            if (eventCursor != null) eventCursor.close();
+            db.close();
+            return 0;
+        }
+        //UZimam id i zatvaram kursor
+        int eventId = eventCursor.getInt(eventCursor.getColumnIndexOrThrow("id"));
+        eventCursor.close();
+
+        //Trazenje ocene u tabeli
+        Cursor cursor = db.query("ratings", new String[]{"rating"}, "userId=? AND eventId=?",
+                new String[]{String.valueOf(userId), String.valueOf(eventId)}, null, null, null);
+        //Izvlacenje ocene
+        int postojecaOcena = 0;
+        if (cursor != null && cursor.moveToFirst()) {
+            postojecaOcena = cursor.getInt(cursor.getColumnIndexOrThrow("rating"));
+            cursor.close();
+        }
+        db.close();
+        return postojecaOcena;
     }
 }
