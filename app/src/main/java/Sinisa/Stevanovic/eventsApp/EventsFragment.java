@@ -9,6 +9,7 @@
     import android.widget.LinearLayout;
     import android.widget.ListView;
     import android.widget.Toast;
+    import Sinisa.Stevanovic.eventsApp.DBHelper;
 
     import androidx.annotation.NonNull;
     import androidx.annotation.Nullable;
@@ -26,6 +27,7 @@
 
         private String[] categories;
         private Button[] categoryButtons;
+        private DBHelper dbHelper;
 
         @Nullable
         @Override
@@ -36,11 +38,13 @@
             llCategoryFilters = view.findViewById(R.id.llCategoryFilters);
             btnAddEvent = view.findViewById(R.id.btnAddEvent);
 
+            dbHelper = new DBHelper(getActivity());
+
             // Ucitavam niz stringova iz string.xml
             categories = getResources().getStringArray(R.array.event_categories);
 
             // Ucitavam i prosledjujem dogadjaje
-            List<Event> initialEvents = AppData.getSortedEvents();
+            List<Event> initialEvents = dbHelper.getAllEvents();
             eventAdapter = new EventAdapter(getActivity(), initialEvents);
             lvEvents.setAdapter(eventAdapter);
 
@@ -116,10 +120,10 @@
 
                     //Proveravamo da li je stisnuto sve.Ako jeste odna ispisujemo sve events sortirano a ako je nego drugo
                     //onda ispisujemo samo tu kategoriju sortirano
-                    if (category.equals(categories[0])) {
-                        eventAdapter.setEvents(AppData.getSortedEvents());
+                    if (category.equals(categories[0])) { // "Sve" kategorija
+                        eventAdapter.setEvents(dbHelper.getAllEvents());
                     } else {
-                        eventAdapter.setEvents(AppData.getSortedEventsByCategory(category));
+                        eventAdapter.setEvents(dbHelper.getEventsByCategory(category));
                     }
                 });
 
@@ -134,7 +138,7 @@
             super.onResume();
             if (eventAdapter != null) {
                 // ucitavam sve dogadjaje
-                eventAdapter.setEvents(AppData.getSortedEvents());
+                eventAdapter.setEvents(dbHelper.getAllEvents());
 
                 // I vracam dugmetu SVE da bude crno
                 if (categoryButtons != null && categoryButtons.length > 0) {

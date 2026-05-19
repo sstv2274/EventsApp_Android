@@ -8,6 +8,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+import Sinisa.Stevanovic.eventsApp.DBHelper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,6 +26,8 @@ public class CreateEventActivity extends AppCompatActivity {
     private CheckBox cbPromoted;
     private Button btnCreateEvent;
 
+    private DBHelper dbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +41,8 @@ public class CreateEventActivity extends AppCompatActivity {
         spinnerCategory = findViewById(R.id.spinnerCategory);
         cbPromoted = findViewById(R.id.cbPromoted);
         btnCreateEvent = findViewById(R.id.btnCreateEvent);
+
+        dbHelper = new DBHelper(this);
 
 
         String[] categoriesArray = getResources().getStringArray(R.array.create_event_categories);
@@ -80,14 +85,36 @@ public class CreateEventActivity extends AppCompatActivity {
 
             // provera formata datuma
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
+            SimpleDateFormat sdf1 = new SimpleDateFormat("dd.MM.yyyy. HH:mm", Locale.getDefault());
             sdf.setLenient(false); // zbog ove linije mora neki realan datum a ne samo dobar format(ne moze 31 februar)
+            sdf1.setLenient(false);
+
+            boolean isFormatValid = false;
             try {
                 sdf.parse(dateTime); // Pokusava da pretvori tekst u datum
+                isFormatValid=true;
             } catch (ParseException e) {
                 //ako nije uhvatio tekst iskace toast
-                Toast.makeText(this, R.string.toast_invalid_date_format, Toast.LENGTH_SHORT).show();
-                return; // kraj
+                //Toast.makeText(this, R.string.toast_invalid_date_format, Toast.LENGTH_SHORT).show();
+                //necu da bude idalje kraj
+
             }
+
+            if (!isFormatValid) {
+                try {
+                    sdf1.parse(dateTime);
+                    isFormatValid = true;
+                } catch (ParseException e) {
+                    // Ni drugi nije prošao
+                    isFormatValid = false;
+                }
+            }
+
+            if (!isFormatValid) {
+                Toast.makeText(this, R.string.toast_invalid_date_format, Toast.LENGTH_SHORT).show();
+                return;
+            }
+
 
             // Provera da li je korisnik izabrao validnu opciju
             if (category.equals(getString(R.string.spinner_hint))) {
@@ -111,6 +138,18 @@ public class CreateEventActivity extends AppCompatActivity {
             }
 
             //Kreiranje dogadjaja preko event factory kada su svi podaci uspesno preuzeti u dobrom formatu
+
+            int isPromotedInt = isPromoted ? 1 : 0;
+
+            long newRowId = dbHelper.addEvent(name, desc, location, dateTime, category, R.drawable.default_picture, isPromotedInt, capacity);
+            if (newRowId != -1) {
+                Toast.makeText(this, R.string.toast_event_created, Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                Toast.makeText(this, R.string.input_error, Toast.LENGTH_SHORT).show();
+            }
+
+            /*
             Event newEvent;
             if (isPromoted) {
                 newEvent = EventFactory.createPromotedEvent(name, desc, location, dateTime, category, R.drawable.default_picture, capacity);
@@ -119,11 +158,11 @@ public class CreateEventActivity extends AppCompatActivity {
             }
 
             //Samo dodam u glavnu listu i to je to
-            AppData.allEvents.add(newEvent);
+            AppData.allEvents.add(newEvent);*/
 
             // potvrda da je uspesno napravljen ivent
-            Toast.makeText(this, R.string.toast_event_created, Toast.LENGTH_SHORT).show();
-            finish();
+
+
         });
     }
 }
