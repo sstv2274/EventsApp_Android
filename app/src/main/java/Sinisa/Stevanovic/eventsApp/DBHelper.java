@@ -40,6 +40,17 @@ public class DBHelper extends SQLiteOpenHelper {
                     "CHECK(promoted = 0 OR brojPrisutnih <= kapacitet)" +
                     ");";
 
+    private static final String CREATE_TABLE_ATTENDANCE =
+            "CREATE TABLE attendance (" +
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "userId INTEGER NOT NULL, " +
+                    "eventId INTEGER NOT NULL, " +
+                    "prisustvo TEXT NOT NULL CHECK(prisustvo IN ('ZAINTERESOVAN', 'PRISUSTVUJE')), " +
+                    "FOREIGN KEY(userId) REFERENCES users(id), " +
+                    "FOREIGN KEY(eventId) REFERENCES events(id), " +
+                    "UNIQUE(userId, eventId)" +
+                    ");";
+
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -49,6 +60,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_USERS);
         db.execSQL(CREATE_TABLE_EVENTS);
+        db.execSQL(CREATE_TABLE_ATTENDANCE);
 
         addInitialEvents(db);
     }
@@ -57,6 +69,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS users");
         db.execSQL("DROP TABLE IF EXISTS events");
+        db.execSQL("DROP TABLE IF EXISTS attendance");
         onCreate(db);
     }
 
@@ -257,6 +270,120 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query("events", null, "UPPER(kategorija) = UPPER(?)", new String[]{category}, null, null, "promoted DESC");
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                eventList.add(cursorToEvent(cursor));
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        db.close();
+        return eventList;
+    }
+
+    public Event findEventByName(String eventName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query("events", null, "naziv=?", new String[]{eventName}, null, null, null);
+
+        Event event = null;
+        if (cursor != null && cursor.moveToFirst()) {
+            event = cursorToEvent(cursor);
+            cursor.close();
+        }
+        db.close();
+        return event;
+    }
+
+    public int getUserIdByUsername(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("users", new String[]{"id"}, "username=?", new String[]{username}, null, null, null);
+        int userId = -1;
+        if (cursor != null && cursor.moveToFirst()) {
+            userId = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+            cursor.close();
+        }
+        db.close();
+        return userId;
+    }
+
+    public boolean handleAttendance(int userId, String eventName, String noviStatus) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        boolean uspeh = false;
+
+        //Pronalazimo ID dogadjaja i proveravamo kapacitet
+        Cursor eventCursor = db.query("events", new String[]{"id", "promoted", "kapacitet", "brojPrisutnih"}, "naziv=?", new String[]{eventName}, null, null, null);
+        if (eventCursor == null || !eventCursor.moveToFirst()) {
+            if (eventCursor != null) eventCursor.close();
+            db.close();
+            return false;
+        }
+
+        int eventId = eventCursor.getInt(eventCursor.getColumnIndexOrThrow("id"));
+        int promoted = eventCursor.getInt(eventCursor.getColumnIndexOrThrow("promoted"));
+        int kapacitet = eventCursor.getInt(eventCursor.getColumnIndexOrThrow("kapacitet"));
+        int brojPrisutnih = eventCursor.getInt(eventCursor.getColumnIndexOrThrow("brojPrisutnih"));
+        eventCursor.close();
+
+        // Provera slobodnih mesta ako je dogadjaj promoted i ako zeli korisnik da prisustvuje
+        if (noviStatus.equals("PRISUSTVUJE") && promoted == 1 && brojPrisutnih >= kapacitet) {
+            db.close();
+            return false; //nema slobodnih mesta
+        }
+
+        // Provera da li zapis vec postoji
+        Cursor attendanceCursor = db.query("attendance", new String[]{"prisustvo"}, "userId=? AND eventId=?", new String[]{String.valueOf(userId), String.valueOf(eventId)}, null, null, null);
+
+        String stariStatus = null;
+        if (attendanceCursor != null && attendanceCursor.moveToFirst()) {
+            stariStatus = attendanceCursor.getString(attendanceCursor.getColumnIndexOrThrow("prisustvo"));
+            attendanceCursor.close();
+        }
+
+        if (stariStatus != null) {
+            // radimo apdejt akos e status promenio
+            if (!stariStatus.equals(noviStatus)) {
+                ContentValues values = new ContentValues();
+                values.put("prisustvo", noviStatus);
+                db.update("attendance", values, "userId=? AND eventId=?", new String[]{String.valueOf(userId), String.valueOf(eventId)});
+                uspeh = true;
+
+                //Ako je presao sa zainteresovan an prisustvuje povecaj broj prisutnih u tabeli events.
+                if (stariStatus.equals("ZAINTERESOVAN") && noviStatus.equals("PRISUSTVUJE")) {
+                    db.execSQL("UPDATE events SET brojPrisutnih = brojPrisutnih + 1 WHERE id = " + eventId);
+                }
+            } else {
+                uspeh = true; // vec je prijavljen sa tim statusom
+            }
+        } else {
+            //Zapis ne postoji pa radimo insert
+            ContentValues values = new ContentValues();
+            values.put("userId", userId);
+            values.put("eventId", eventId);
+            values.put("prisustvo", noviStatus);
+            db.insert("attendance", null, values);
+            uspeh = true;
+
+            //Ako je odma izabrao da ucestvuje inkremetujemo broj pristunih.
+            if (noviStatus.equals("PRISUSTVUJE")) {
+                db.execSQL("UPDATE events SET brojPrisutnih = brojPrisutnih + 1 WHERE id = " + eventId);
+            }
+        }
+
+        db.close();
+        return uspeh;
+    }
+
+    public List<Event> getEventsForUserByStatus(int userId, String status) {
+        List<Event> eventList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // ovim sql kodom spajam events i attendance
+        String query = "SELECT e.* FROM events e " +
+                "INNER JOIN attendance a ON e.id = a.eventId " +
+                "WHERE a.userId = ? AND a.prisustvo = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), status});
 
         if (cursor != null && cursor.moveToFirst()) {
             do {

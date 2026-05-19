@@ -89,4 +89,5 @@
     <string name="invalid_email">Niste uneli dobar format email-a.</string>
     <string name="bad_pass">Uneta pogresna sifra!</string>
     <string name="input_error">Greska pri dodavanju</string>
+    <string name="no_space">Nema slobodnih mesta za ovaj događaj</string>
 </resources>

@@ -8,11 +8,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.List;
+
 public class InterestedEventsActivity extends AppCompatActivity {
 
     private ListView lvInterestedEvents;
     private TextView tvEmptyInterested;
     private EventAdapter eventAdapter;
+
+    private DBHelper dbHelper;
+    private int currentUserId = 1; //!!//U sledecem koraku promeniti//!!//
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,14 +27,16 @@ public class InterestedEventsActivity extends AppCompatActivity {
         lvInterestedEvents = findViewById(R.id.lvInterestedEvents);
         tvEmptyInterested = findViewById(R.id.tvEmptyInterested);
 
+        dbHelper = new DBHelper(this);
 
         lvInterestedEvents.setEmptyView(tvEmptyInterested);
 
-        // Prosledjujemo listu u postojeci adapter
-        eventAdapter = new EventAdapter(this, AppData.interestedEvents);
+        // Ucitavanje iz baze podataka
+        List<Event> interestedEvents = dbHelper.getEventsForUserByStatus(currentUserId, "ZAINTERESOVAN");
+        eventAdapter = new EventAdapter(this, interestedEvents);
         lvInterestedEvents.setAdapter(eventAdapter);
 
-        // Otvaramo detalje liste kada stisnemo na Listner i prosledjujemo preko intenta podatak o imenu(da bi znali o kom aktivitiju detalje da prikazemo)
+        // Otvaranje detalja dogadjaja
         lvInterestedEvents.setOnItemClickListener((parent, view, position, id) -> {
             Event selectedEvent = (Event) eventAdapter.getItem(position);
             Intent intent = new Intent(InterestedEventsActivity.this, EventDetailsActivity.class);
@@ -38,13 +45,13 @@ public class InterestedEventsActivity extends AppCompatActivity {
         });
     }
 
-    //Dodao sam ovo kako bi pratio ako dodam jos neki event u IntrestedEvents a ne da zamrzne ekran i ceka
-    //da se vratim
     @Override
     protected void onResume() {
         super.onResume();
         if (eventAdapter != null) {
-            eventAdapter.setEvents(AppData.interestedEvents);
+            //Sada vucem sveze podatke iz baze umesto iz appdata.
+            List<Event> updatedEvents = dbHelper.getEventsForUserByStatus(currentUserId, "ZAINTERESOVAN");
+            eventAdapter.setEvents(updatedEvents);
         }
     }
 }

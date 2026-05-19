@@ -120,7 +120,7 @@
 
                     //Proveravamo da li je stisnuto sve.Ako jeste odna ispisujemo sve events sortirano a ako je nego drugo
                     //onda ispisujemo samo tu kategoriju sortirano
-                    if (category.equals(categories[0])) {
+                    if (category.equals(categories[0])) { // "Sve" kategorija
                         eventAdapter.setEvents(dbHelper.getAllEvents());
                     } else {
                         eventAdapter.setEvents(dbHelper.getEventsByCategory(category));
