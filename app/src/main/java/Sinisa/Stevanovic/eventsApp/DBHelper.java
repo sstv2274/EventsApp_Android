@@ -256,7 +256,7 @@ public class DBHelper extends SQLiteOpenHelper {
         List<Event> eventList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query("events", null, "kategorija=?", new String[]{category}, null, null, "promoted DESC");
+        Cursor cursor = db.query("events", null, "UPPER(kategorija) = UPPER(?)", new String[]{category}, null, null, "promoted DESC");
 
         if (cursor != null && cursor.moveToFirst()) {
             do {

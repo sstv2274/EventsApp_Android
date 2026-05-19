@@ -45,7 +45,7 @@ public class CreateEventActivity extends AppCompatActivity {
         dbHelper = new DBHelper(this);
 
 
-        String[] categoriesArray = getResources().getStringArray(R.array.create_event_categories);
+        String[] categoriesArray = getResources().getStringArray(R.array.event_categories);
         List<String> categoryList = new ArrayList<>();
         categoryList.add(getString(R.string.spinner_hint)); //Dodajem samo izberite kategoriju na prvo mesto
         categoryList.addAll(Arrays.asList(categoriesArray)); // Dodajemo moguce opcije
