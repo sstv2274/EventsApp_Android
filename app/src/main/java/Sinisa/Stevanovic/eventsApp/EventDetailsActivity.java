@@ -21,8 +21,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private Button btnInterested, btnAttending;
 
     private DBHelper dbHelper;
-    private int currentUserId = 1; //!!//U sledecem koraku cu prilagoditi da
-    // svaki user ima svoj id i da ima odvojene intrested i attending events
+    private int currentUserId;//Svaki user ima svoj ID
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +29,10 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         dbHelper = new DBHelper(this);
 
+        SharedPreferences sp = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
+        String loggedInUser = sp.getString("LOGGED_IN_USER", "");
 
+        currentUserId = dbHelper.getUserIdByUsername(loggedInUser);
 
         // Povezivanje elemenata iz xml-a
         ivDetailsImage = findViewById(R.id.ivDetailsImage);

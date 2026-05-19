@@ -2,7 +2,9 @@ package Sinisa.Stevanovic.eventsApp;
 
 // RA58/2023 Sinisa Stevanovic
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -17,7 +19,7 @@ public class InterestedEventsActivity extends AppCompatActivity {
     private EventAdapter eventAdapter;
 
     private DBHelper dbHelper;
-    private int currentUserId = 1; //!!//U sledecem koraku promeniti//!!//
+    private int currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +31,14 @@ public class InterestedEventsActivity extends AppCompatActivity {
 
         dbHelper = new DBHelper(this);
 
+        SharedPreferences sp = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
+        String loggedInUser = sp.getString("LOGGED_IN_USER", "");
+
+        currentUserId = dbHelper.getUserIdByUsername(loggedInUser);
+
         lvInterestedEvents.setEmptyView(tvEmptyInterested);
 
-        // Ucitavanje iz baze podataka
+        // Ucitavanje iz baze podataka sa id-om korisnika
         List<Event> interestedEvents = dbHelper.getEventsForUserByStatus(currentUserId, "ZAINTERESOVAN");
         eventAdapter = new EventAdapter(this, interestedEvents);
         lvInterestedEvents.setAdapter(eventAdapter);
@@ -49,7 +56,7 @@ public class InterestedEventsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (eventAdapter != null) {
-            //Sada vucem sveze podatke iz baze umesto iz appdata.
+            //Sada vucem sveze podatke za trenutnog korisnika
             List<Event> updatedEvents = dbHelper.getEventsForUserByStatus(currentUserId, "ZAINTERESOVAN");
             eventAdapter.setEvents(updatedEvents);
         }

@@ -121,6 +121,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
         private void prelazNaEventsActivity(String username, String email) {
+            // Otvaram shared preferences pod nazivom User Session
+            android.content.SharedPreferences sp = getSharedPreferences("UserSession", MODE_PRIVATE);
+            android.content.SharedPreferences.Editor editor = sp.edit();
+            //Upisuje username ulogovanog ili registrovanog korisnika pod kljucem LOGGED_IN_USER
+            editor.putString("LOGGED_IN_USER", username);
+            editor.apply();
+
             Intent intent = new Intent(LoginActivity.this, EventsActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString("USERNAME", username);

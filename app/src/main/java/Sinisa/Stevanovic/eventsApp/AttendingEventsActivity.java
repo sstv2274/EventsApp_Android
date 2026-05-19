@@ -1,5 +1,7 @@
 package Sinisa.Stevanovic.eventsApp;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -14,7 +16,7 @@ public class AttendingEventsActivity extends AppCompatActivity {
     private TextView tvEmptyAttending;
 
     private DBHelper dbHelper;
-    private int currentUserId = 1; //!!//Ispraviti u sledecem koraku//!!//
+    private int currentUserId;//ID korisnika
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +27,10 @@ public class AttendingEventsActivity extends AppCompatActivity {
         tvEmptyAttending = findViewById(R.id.tvEmptyAttending);
 
         dbHelper = new DBHelper(this);
+
+        SharedPreferences sp = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
+        String loggedInUser = sp.getString("LOGGED_IN_USER", "");
+        currentUserId = dbHelper.getUserIdByUsername(loggedInUser);
 
         // Prikazujem poruku ako je lista prazna
         lvAttendingEvents.setEmptyView(tvEmptyAttending);
