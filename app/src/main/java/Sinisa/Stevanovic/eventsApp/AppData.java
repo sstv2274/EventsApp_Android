@@ -1,6 +1,8 @@
 package Sinisa.Stevanovic.eventsApp;
 
 // RA58/2023 Sinisa Stevanovic
+//da moze da se klilkne na detalje
+//sorting
 
 import java.util.ArrayList;
 import java.util.Collections;

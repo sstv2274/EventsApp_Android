@@ -89,4 +89,9 @@
     <string name="spinner_hint">Izaberite kategoriju</string>
     <string name="toast_select_category">Odaberite kategoriju događaja.</string>
     <string name="toast_invalid_date_format">Datum nije unet u dobrom formatu (dd.MM.yyyy HH:mm).</string>
+    <string name="no_user">Korisnik sa ovim imenom ne postoji.</string>
+    <string name="successfully_register">Uspesna registracija.</string>
+    <string name="copy">Korisnicko ime ili e-adresa vec postoje</string>
+    <string name="lenght_pass">Sifra mora imati najmanje 8 karaktera.</string>
+    <string name="invalid_email">Niste uneli dobar format email-a.</string>
 </resources>
