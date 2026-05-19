@@ -378,10 +378,11 @@ public class DBHelper extends SQLiteOpenHelper {
         List<Event> eventList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        // ovim sql kodom spajam events i attendance
+        // Sada prosledjujem sortiran niz u intrested uvek tako da na vrhu budu promoted tako da sam resio jedan bug
         String query = "SELECT e.* FROM events e " +
                 "INNER JOIN attendance a ON e.id = a.eventId " +
-                "WHERE a.userId = ? AND a.prisustvo = ?";
+                "WHERE a.userId = ? AND a.prisustvo = ? " +
+                "ORDER BY e.promoted DESC";
 
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), status});
 
