@@ -51,7 +51,6 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put("email", email);
         values.put("lozinka", hashedPassword);
 
-        db.close();
         return db.insert("users", null, values);
     }
 
@@ -79,9 +78,45 @@ public class DBHelper extends SQLiteOpenHelper {
             if (cursor != null) cursor.close();
         }
 
-        db.close();
-        cursor.close();
+        if (db != null) {
+            db.close();
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
         return storedEmail;
 
+    }
+
+    public boolean changePassword(String username, String currentPassword, String newPassword) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        //Prvo nalazim korisnika u abzi
+        Cursor cursor = db.query("users", new String[]{"lozinka"}, "username=?", new String[]{username}, null, null, null);
+
+        boolean isSuccess = false;
+        if (cursor != null && cursor.moveToFirst()) {
+            String storedPasswordData = cursor.getString(cursor.getColumnIndexOrThrow("lozinka"));
+            //provera sifre
+            if (PasswordHasher.verifyPassword(currentPassword, storedPasswordData)) {
+                //ako je uneta tacna sifra hash-uje novu sifru i menja je u db
+                String newHashedPassword = PasswordHasher.hashPassword(newPassword);
+
+                ContentValues values = new ContentValues();
+                values.put("lozinka", newHashedPassword);
+
+                int rowsAffected = db.update("users", values, "username=?", new String[]{username});
+
+                if (rowsAffected == 1) {
+                    isSuccess = true;
+                }
+            }
+        }
+
+        if (cursor != null) {
+            cursor.close();
+        }
+
+        return isSuccess;
     }
 }

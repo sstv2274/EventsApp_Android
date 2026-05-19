@@ -94,4 +94,5 @@
     <string name="copy">Korisnicko ime ili e-adresa vec postoje</string>
     <string name="lenght_pass">Sifra mora imati najmanje 8 karaktera.</string>
     <string name="invalid_email">Niste uneli dobar format email-a.</string>
+    <string name="bad_pass">Uneta pogresna sifra!</string>
 </resources>

@@ -11,6 +11,9 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView tvProfileUsername, tvProfileEmail;
     private Button btnPassword, btnEndSession;
 
+    private String currentUsername;
+    private String currentEmail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,19 +26,20 @@ public class ProfileActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            String username = bundle.getString("USERNAME");
-            String email = bundle.getString("EMAIL");
+            currentUsername = bundle.getString("USERNAME");
+            currentEmail = bundle.getString("EMAIL");
 
-            if (username != null && !username.isEmpty()) {
-                tvProfileUsername.setText(username);
+            if (currentUsername != null && !currentUsername.isEmpty()) {
+                tvProfileUsername.setText(currentUsername);
             }
-            if (email != null && !email.isEmpty()) {
-                tvProfileEmail.setText(email);
+            if (currentEmail != null && !currentEmail.isEmpty()) {
+                tvProfileEmail.setText(currentEmail);
             }
         }
 
         btnPassword.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, PasswordActivity.class);
+            intent.putExtra("USERNAME", currentUsername);
             startActivity(intent);
         });
 
