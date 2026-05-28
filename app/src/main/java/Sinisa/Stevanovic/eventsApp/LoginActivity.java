@@ -89,35 +89,99 @@ public class LoginActivity extends AppCompatActivity {
             RegisterForm.setVisibility(View.VISIBLE);
         });
         btnSubmitLogin.setOnClickListener(v -> {
-            String username = LoginUsername.getText().toString();
+            String username = LoginUsername.getText().toString().trim();
             String password = LoginPassword.getText().toString();
 
             if (!username.isEmpty() && !password.isEmpty()){
-                String userEmail = dbHelper.checkUserLogin(username, password);
 
-                if (userEmail != null) {
-                    prelazNaEventsActivity(username, userEmail);
-                } else {
-                    Toast.makeText(this, R.string.toast_wrong_credentials, Toast.LENGTH_SHORT).show();
-                }
+                Runnable loginZadatak = new Runnable() {
+                    @Override
+                    public void run() {
+                        HttpURLConnection urlConnection = null;
+                        try {
+                            URL url = new URL("http://192.168.0.16:3000/login");
+                            urlConnection = (HttpURLConnection) url.openConnection();
+                            urlConnection.setRequestMethod("POST");
+                            urlConnection.setRequestProperty("Content-Type", "application/json");
+                            urlConnection.setDoOutput(true);
+
+                            // Pakujemo kredencijale u JSON objekat
+                            JSONObject jsonBody = new JSONObject();
+                            jsonBody.put("username", username);
+                            jsonBody.put("password", password);
+
+                            OutputStream os = urlConnection.getOutputStream();
+                            os.write(jsonBody.toString().getBytes("UTF-8"));
+                            os.flush();
+                            os.close();
+
+                            int responseCode = urlConnection.getResponseCode();
+
+                            // Ako su korisničko ime i lozinka ispravni, server vraća 200 OK
+                            if (responseCode == HttpURLConnection.HTTP_OK) {
+                                BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                                StringBuilder sb = new StringBuilder();
+                                String line;
+                                while ((line = br.readLine()) != null) {
+                                    sb.append(line);
+                                }
+                                br.close();
+
+                                // Čitamo podatke uspešno ulogovanog korisnika sa servera
+                                JSONObject ulogovaniKorisnik = new JSONObject(sb.toString());
+                                String userEmail = ulogovaniKorisnik.getString("email");
+                                boolean isAdmin = ulogovaniKorisnik.getBoolean("isAdmin"); // Izvlačimo rolu
+
+                                // Obavezno vraćanje na UI nit pre prelaska na novi ekran
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        prelazNaEventsActivity(username, userEmail, isAdmin);
+                                    }
+                                });
+                            } else {
+                                // Ako kombinacija nije ispravna (npr. server vrati 401)
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(LoginActivity.this, R.string.toast_wrong_credentials, Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(LoginActivity.this, R.string.server_conn_error, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        } finally {
+                            if (urlConnection != null) {
+                                urlConnection.disconnect();
+                            }
+                        }
+                    }
+                };
+                new Thread(loginZadatak).start();
+
             } else {
                 Toast.makeText(this, R.string.toast_empty_fields, Toast.LENGTH_SHORT).show();
             }
-
         });
 
         btnSubmitRegister.setOnClickListener(v -> {
-            String username = etRegUsername.getText().toString();
-            String email = etRegEmail.getText().toString();
+            String username = etRegUsername.getText().toString().trim();
+            String email = etRegEmail.getText().toString().trim();
             String password = etRegPassword.getText().toString();
             boolean isAdmin = cbRegIsAdmin.isChecked();
-
 
             if (!username.isEmpty() && !email.isEmpty() && password.length() >= 8) {
                 if(!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
                     Toast.makeText(this, R.string.invalid_email, Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 Runnable regZadatak = new Runnable() {
                     @Override
                     public void run() {
@@ -128,12 +192,12 @@ public class LoginActivity extends AppCompatActivity {
                             urlConnection.setRequestMethod("POST");
                             urlConnection.setRequestProperty("Content-Type", "application/json");
                             urlConnection.setDoOutput(true);
-                            //Formiranje Json objekta
+
                             JSONObject jsonBody = new JSONObject();
-                            jsonBody.put("username",username);
-                            jsonBody.put("password",password);
-                            jsonBody.put("email",email);
-                            jsonBody.put("isAdmin",isAdmin);
+                            jsonBody.put("username", username);
+                            jsonBody.put("password", password);
+                            jsonBody.put("email", email);
+                            jsonBody.put("isAdmin", isAdmin);
 
                             OutputStream os = urlConnection.getOutputStream();
                             os.write(jsonBody.toString().getBytes("UTF-8"));
@@ -146,41 +210,43 @@ public class LoginActivity extends AppCompatActivity {
                                 BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                                 StringBuilder sb = new StringBuilder();
                                 String line;
-                                while((line = br.readLine())!=null){
+                                while((line = br.readLine()) != null){
                                     sb.append(line);
                                 }
+                                br.close();
+
                                 JSONObject registrovaniKorisnik = new JSONObject(sb.toString());
                                 String serverId = registrovaniKorisnik.getString("_id");
 
                                 long newRowId = dbHelper.registerUser(serverId, username, email, password);
+
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         if (newRowId != -1) {
                                             Toast.makeText(LoginActivity.this, R.string.successfully_register, Toast.LENGTH_SHORT).show();
-                                            prelazNaEventsActivity(username, email);
+                                            prelazNaEventsActivity(username, email, isAdmin);
                                         } else {
                                             Toast.makeText(LoginActivity.this, R.string.copy, Toast.LENGTH_LONG).show();
                                         }
                                     }
                                 });
-                            } else if (responseCode == 409) { // HTTP_CONFLICT
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(LoginActivity.this, R.string.no_user, Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        } else {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(LoginActivity.this, R.string.server_error, Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-
-                        }catch (Exception e){
+                            } else if (responseCode == 409) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(LoginActivity.this, R.string.no_user, Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            } else {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(LoginActivity.this, R.string.server_error, Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        } catch (Exception e){
                             e.printStackTrace();
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -188,21 +254,13 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.makeText(LoginActivity.this, R.string.server_conn_error, Toast.LENGTH_SHORT).show();
                                 }
                             });
-                        }finally {
+                        } finally {
                             if (urlConnection != null) {
                                 urlConnection.disconnect();
                             }
                         }
                     }
                 };
-                /*long newRowId = dbHelper.registerUser(username, email, password);
-
-                if (newRowId != -1) {
-                    Toast.makeText(this, R.string.successfully_register, Toast.LENGTH_SHORT).show();
-                    prelazNaEventsActivity(username, email);
-                } else {
-                    Toast.makeText(this, R.string.copy, Toast.LENGTH_LONG).show();
-                }*/
                 new Thread(regZadatak).start();
 
             } else if (password.length() < 8) {
@@ -213,18 +271,20 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-        private void prelazNaEventsActivity(String username, String email) {
+        private void prelazNaEventsActivity(String username, String email, boolean isAdmin) {
             // Otvaram shared preferences pod nazivom User Session
             android.content.SharedPreferences sp = getSharedPreferences("UserSession", MODE_PRIVATE);
             android.content.SharedPreferences.Editor editor = sp.edit();
             //Upisuje username ulogovanog ili registrovanog korisnika pod kljucem LOGGED_IN_USER
             editor.putString("LOGGED_IN_USER", username);
+            editor.putBoolean("IS_ADMIN", isAdmin);
             editor.apply();
 
             Intent intent = new Intent(LoginActivity.this, EventsActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString("USERNAME", username);
             bundle.putString("EMAIL", email);
+            bundle.putBoolean("IS_ADMIN", isAdmin);
             intent.putExtras(bundle);
             startActivity(intent);
             finish();
