@@ -1,6 +1,7 @@
 package Sinisa.Stevanovic.eventsApp;
 
 // RA58/2023 Sinisa Stevanovic
+//http://192.168.0.16:3000/
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
