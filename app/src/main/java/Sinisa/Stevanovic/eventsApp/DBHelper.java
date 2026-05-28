@@ -17,6 +17,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_USERS =
             "CREATE TABLE users (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "server_id TEXT UNIQUE, " +
                     "username TEXT UNIQUE NOT NULL, " +
                     "email TEXT UNIQUE NOT NULL, " +
                     "lozinka TEXT NOT NULL" +
@@ -93,12 +94,13 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public long registerUser(String username, String email, String password) {
+    public long registerUser(String serverId, String username, String email, String password) {
 
         String hashedPassword = PasswordHasher.hashPassword(password);
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put("server_id",serverId);
         values.put("username", username);
         values.put("email", email);
         values.put("lozinka", hashedPassword);

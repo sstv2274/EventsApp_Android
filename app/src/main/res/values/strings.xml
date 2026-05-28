@@ -90,4 +90,7 @@
     <string name="bad_pass">Uneta pogresna sifra!</string>
     <string name="input_error">Greska pri dodavanju</string>
     <string name="no_space">Nema slobodnih mesta za ovaj događaj</string>
+    <string name="regasuser">Registruj se kao Admin</string>
+    <string name="server_error">Greska prilikom registracije na serveru</string>
+    <string name="server_conn_error">Problem sa konekcijom na server</string>
 </resources>
