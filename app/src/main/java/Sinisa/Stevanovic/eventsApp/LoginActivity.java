@@ -23,7 +23,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -59,6 +60,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         dbHelper = new DBHelper(this);
+        //napuniMongoDBBazuKonstanta();
+
 
         // Mapiranje UI elemenata
         Buttons = findViewById(R.id.llInitialButtons);
@@ -289,4 +292,60 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    /*private void napuniMongoDBBazuKonstanta() {
+        Runnable zadatakPunjenja = new Runnable() {
+            @Override
+            public void run() {
+                List<JSONObject> listaDogadjaja = new ArrayList<>();
+                try {
+                    listaDogadjaja.add(new JSONObject("{\"name\":\"Klen fishing Cup Loznica\",\"description\":\"Varalicarenje klena\",\"location\":\"Mali Zvornik, Drina\",\"eventTime\":\"20.06.2026 05:00\",\"category\":\"FISHING\",\"promoted\":true,\"capacity\":65}"));
+                    listaDogadjaja.add(new JSONObject("{\"name\":\"Zimsko Smudjarenje Cup\",\"description\":\"Dzigovanje smudja u ranoj zimi\",\"location\":\"Futog, Dunav\",\"eventTime\":\"15.12.2025 07:00\",\"category\":\"FISHING\",\"promoted\":false,\"capacity\":0}"));
+                    listaDogadjaja.add(new JSONObject("{\"name\":\"Skobaljijada Loznica\",\"description\":\"Uzivanje na Drini\",\"location\":\"Loznica, Drina, Zicina plaza\",\"eventTime\":\"10.06.2026 06:00\",\"category\":\"FISHING\",\"promoted\":false,\"capacity\":0}"));
+                    listaDogadjaja.add(new JSONObject("{\"name\":\"Rostilj i pivo u Velikoj reci\",\"description\":\"Pecanje i odmor\",\"location\":\"Vikendica na Drini\",\"eventTime\":\"01.05.2026 10:00\",\"category\":\"NAPIVO\",\"promoted\":false,\"capacity\":0}"));
+                    listaDogadjaja.add(new JSONObject("{\"name\":\"Beer fest\",\"description\":\"Testiranje piva\",\"location\":\"Novi Sad, Master hala\",\"eventTime\":\"15.05.2026 18:00\",\"category\":\"NAPIVO\",\"promoted\":false,\"capacity\":0}"));
+                    listaDogadjaja.add(new JSONObject("{\"name\":\"Degustacija Krafta\",\"description\":\"Proba novih piva\",\"location\":\"Pivoteka 77\",\"eventTime\":\"20.05.2026 20:00\",\"category\":\"NAPIVO\",\"promoted\":false,\"capacity\":0}"));
+                    listaDogadjaja.add(new JSONObject("{\"name\":\"Oktoberfest NS\",\"description\":\"Veliki festival piva\",\"location\":\"Novosadski sajam\",\"eventTime\":\"10.10.2026 12:00\",\"category\":\"NAPIVO\",\"promoted\":true,\"capacity\":5000}"));
+                    listaDogadjaja.add(new JSONObject("{\"name\":\"Brucosijada\",\"description\":\"Zurka\",\"location\":\"Dva Galeba\",\"eventTime\":\"15.10.2030 22:00\",\"category\":\"PARTY\",\"promoted\":false,\"capacity\":0}"));
+                    listaDogadjaja.add(new JSONObject("{\"name\":\"Apsolventsko vece\",\"description\":\"Proslava kraja studija\",\"location\":\"Hotel Zvezda\",\"eventTime\":\"10.06.2027 21:00\",\"category\":\"PARTY\",\"promoted\":false,\"capacity\":0}"));
+                    listaDogadjaja.add(new JSONObject("{\"name\":\"Gustiranje Duskove rakije\",\"description\":\"Uzivo Sejo kalac i Minela\",\"location\":\"Djukin stan\",\"eventTime\":\"25.05.2026 20:30\",\"category\":\"PARTY\",\"promoted\":false,\"capacity\":0}"));
+                    listaDogadjaja.add(new JSONObject("{\"name\":\"Zurka 80-te\",\"description\":\"Jaka muzika\",\"location\":\"Gerila\",\"eventTime\":\"20.07.2026 21:00\",\"category\":\"PARTY\",\"promoted\":false,\"capacity\":0}"));
+                    listaDogadjaja.add(new JSONObject("{\"name\":\"EXIT Festival\",\"description\":\"Najveći muzički festival\",\"location\":\"Petrovaradinska tvrđava\",\"eventTime\":\"09.07.2026 20:00\",\"category\":\"FESTIVAL\",\"promoted\":true,\"capacity\":40000}"));
+                    listaDogadjaja.add(new JSONObject("{\"name\":\"Beer Fest 2025\",\"description\":\"Beogradski festival piva\",\"location\":\"Ušće\",\"eventTime\":\"15.08.2025 18:00\",\"category\":\"FESTIVAL\",\"promoted\":false,\"capacity\":0}"));
+                    listaDogadjaja.add(new JSONObject("{\"name\":\"Arsenal Fest\",\"description\":\"Festival u Kragujevcu\",\"location\":\"Knežev arsenal\",\"eventTime\":\"25.06.2026 19:00\",\"category\":\"FESTIVAL\",\"promoted\":false,\"capacity\":0}"));
+                    listaDogadjaja.add(new JSONObject("{\"name\":\"LoveFest\",\"description\":\"Festival elektronske muzike\",\"location\":\"Vrnjačka Banja\",\"eventTime\":\"05.03.2026 20:00\",\"category\":\"FESTIVAL\",\"promoted\":false,\"capacity\":0}"));
+                    listaDogadjaja.add(new JSONObject("{\"name\":\"Posledni program tvog kompjutera\",\"description\":\"Oprostajni kocnert DENIS&DENIS\",\"location\":\"SKC Fabrika\",\"eventTime\":\"21.03.2026 21:00\",\"category\":\"CONCERT\",\"promoted\":false,\"capacity\":0}"));
+                    listaDogadjaja.add(new JSONObject("{\"name\":\"Bajaga i Instruktori\",\"description\":\"Mid\",\"location\":\"Spens\",\"eventTime\":\"30.05.2026 21:00\",\"category\":\"CONCERT\",\"promoted\":true,\"capacity\":10000}"));
+                    listaDogadjaja.add(new JSONObject("{\"name\":\"Tap011\",\"description\":\"Negde u daljini jedna reka protice\",\"location\":\"Plato Tekstila\",\"eventTime\":\"05.05.2026 21:00\",\"category\":\"CONCERT\",\"promoted\":false,\"capacity\":0}"));
+
+                    for (JSONObject dogadjajJson : listaDogadjaja) {
+                        HttpURLConnection urlConnection = null;
+                        try {
+                            URL url = new URL("http://192.168.0.16:3000/events");
+                            urlConnection = (HttpURLConnection) url.openConnection();
+                            urlConnection.setRequestMethod("POST");
+                            urlConnection.setRequestProperty("Content-Type", "application/json");
+                            urlConnection.setDoOutput(true);
+
+                            OutputStream os = urlConnection.getOutputStream();
+                            os.write(dogadjajJson.toString().getBytes("UTF-8"));
+                            os.flush();
+                            os.close();
+
+                            int responseCode = urlConnection.getResponseCode();
+                            if (responseCode == HttpURLConnection.HTTP_OK || responseCode == 201) {
+                                android.util.Log.d("MONGODB_PUNJENJE", "Uspešno ubačen: " + dogadjajJson.getString("name"));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            if (urlConnection != null) urlConnection.disconnect();
+                        }
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+        new Thread(zadatakPunjenja).start();
+    }*/
     }

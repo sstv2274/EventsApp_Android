@@ -108,17 +108,6 @@ public class PasswordActivity extends AppCompatActivity {
                     }
                 };
                 new Thread(promenaLozinkeMreza).start();
-
-                /*boolean isChanged = dbHelper.changePassword(loggedInUsername, currentPassword, newPassword);
-
-                if (isChanged) {
-                    Toast.makeText(PasswordActivity.this, R.string.toast_password_changed, Toast.LENGTH_SHORT).show();
-                    finish(); //vraca korisnika nazad nakon promene sifre
-                } else {
-                    // Uneta losa stara lozinka
-                    Toast.makeText(PasswordActivity.this, R.string.bad_pass, Toast.LENGTH_SHORT).show();
-                }*/
-
             } else {
                 Toast.makeText(PasswordActivity.this, R.string.no_user, Toast.LENGTH_SHORT).show();
             }

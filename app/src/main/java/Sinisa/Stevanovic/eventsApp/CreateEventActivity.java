@@ -1,5 +1,6 @@
 package Sinisa.Stevanovic.eventsApp;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -18,6 +19,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import org.json.JSONObject;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class CreateEventActivity extends AppCompatActivity {
 
@@ -31,7 +38,16 @@ public class CreateEventActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences sp = getSharedPreferences("UserSession", MODE_PRIVATE);
+        boolean isAdmin = sp.getBoolean("IS_ADMIN", false);
+
+        if(!isAdmin){
+            Toast.makeText(this,R.string.pristup_odbijen,Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
         setContentView(R.layout.activity_create_event);
+
 
         etEventName = findViewById(R.id.etEventName);
         etEventDesc = findViewById(R.id.etEventDesc);
@@ -43,8 +59,6 @@ public class CreateEventActivity extends AppCompatActivity {
         btnCreateEvent = findViewById(R.id.btnCreateEvent);
 
         dbHelper = new DBHelper(this);
-
-
         String[] categoriesArray = getResources().getStringArray(R.array.event_categories);
         List<String> categoryList = new ArrayList<>();
         categoryList.add(getString(R.string.spinner_hint)); //Dodajem samo izberite kategoriju na prvo mesto
@@ -52,10 +66,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
         //prosledjujem adapteru kako spiner treba da izgleda(mucio me dark theme pa sam ovako resio)
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_spinner, categoryList);
-
         //takodje sam prosledio da i padajuci meni koristi isti dizajn
         adapter.setDropDownViewResource(R.layout.item_spinner);
-
         spinnerCategory.setAdapter(adapter);
 
         // logika za prikazivanje edittext-a za kapacitet kada je cekiran check box i kada nije
@@ -140,16 +152,88 @@ public class CreateEventActivity extends AppCompatActivity {
             //Kreiranje dogadjaja preko event factory kada su svi podaci uspesno preuzeti u dobrom formatu
 
             int isPromotedInt = isPromoted ? 1 : 0;
+            final int finalCapacity = capacity;
+            Runnable kreiranjeIventa = new Runnable() {
+                @Override
+                public void run() {
+                    HttpURLConnection urlConnection = null;
+                    try{
+                        URL url = new URL("http://192.168.0.16:3000/events");
+                        urlConnection = (HttpURLConnection) url.openConnection();
+                        urlConnection.setRequestMethod("POST");
+                        urlConnection.setRequestProperty("Content-Type", "application/json");
+                        urlConnection.setDoOutput(true);
+                        JSONObject jsonBody = new JSONObject();
+                        jsonBody.put("name", name);
+                        jsonBody.put("description", desc);
+                        jsonBody.put("location", location);
+                        jsonBody.put("eventTime", dateTime);
+                        jsonBody.put("category", category);
+                        jsonBody.put("promoted", isPromoted);
+                        jsonBody.put("kapacitet", finalCapacity);
 
-            long newRowId = dbHelper.addEvent(name, desc, location, dateTime, category, R.drawable.default_picture, isPromotedInt, capacity);
-            if (newRowId != -1) {
-                Toast.makeText(this, R.string.toast_event_created, Toast.LENGTH_SHORT).show();
-                finish();
-            } else {
-                Toast.makeText(this, R.string.input_error, Toast.LENGTH_SHORT).show();
-            }
+                        OutputStream os = urlConnection.getOutputStream();
+                        os.write(jsonBody.toString().getBytes("UTF-8"));
+                        os.flush();
+                        os.close();
 
+                        int responseCode = urlConnection.getResponseCode();
+                        if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED || responseCode == 201){
+                            BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                            StringBuilder sb = new StringBuilder();
+                            String line;
+
+                            while((line = br.readLine())!=null){
+                                sb.append(line);
+                            }
+                            br.close();
+
+                            JSONObject kreiranDogadjaj = new JSONObject(sb.toString());
+                            String serverId =kreiranDogadjaj.getString("_id");
+
+                            long newRowId = dbHelper.addEvent(serverId, name, desc, location, dateTime, category, R.drawable.default_picture, isPromotedInt, finalCapacity);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (newRowId != -1) {
+                                        Toast.makeText(CreateEventActivity.this, R.string.toast_event_created, Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    } else {
+                                        Toast.makeText(CreateEventActivity.this, R.string.input_error, Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                            });
+                        }else {
+                            final int finalResponseCode = responseCode;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(CreateEventActivity.this, "Server vratio grešku: " + finalResponseCode, Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(CreateEventActivity.this, R.string.server_conn_error, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }finally {
+                        if (urlConnection != null) {
+                            urlConnection.disconnect();
+                        }
+                    }
+                }
+            };
+
+            new Thread(kreiranjeIventa).start();
             /*
+
+
+
             Event newEvent;
             if (isPromoted) {
                 newEvent = EventFactory.createPromotedEvent(name, desc, location, dateTime, category, R.drawable.default_picture, capacity);
