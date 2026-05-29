@@ -338,6 +338,30 @@ public class DBHelper extends SQLiteOpenHelper {
         return eventList;
     }
 
+    public String getServerUserIdByUsername(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("users", new String[]{"server_id"}, "username=?", new String[]{username}, null, null, null);
+        String serverId = null;
+        if (cursor != null && cursor.moveToFirst()) {
+            serverId = cursor.getString(cursor.getColumnIndexOrThrow("server_id"));
+            cursor.close();
+        }
+        db.close();
+        return serverId;
+    }
+    
+    public String getServerEventIdByName(String eventName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("events", new String[]{"server_id"}, "naziv=?", new String[]{eventName}, null, null, null);
+        String serverId = null;
+        if (cursor != null && cursor.moveToFirst()) {
+            serverId = cursor.getString(cursor.getColumnIndexOrThrow("server_id"));
+            cursor.close();
+        }
+        db.close();
+        return serverId;
+    }
+
     public Event findEventByName(String eventName) {
         SQLiteDatabase db = this.getReadableDatabase();
 

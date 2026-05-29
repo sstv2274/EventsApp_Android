@@ -38,10 +38,7 @@ public class InterestedEventsActivity extends AppCompatActivity {
 
         lvInterestedEvents.setEmptyView(tvEmptyInterested);
 
-        // Ucitavanje iz baze podataka sa id-om korisnika
-        List<Event> interestedEvents = dbHelper.getEventsForUserByStatus(currentUserId, "ZAINTERESOVAN");
-        eventAdapter = new EventAdapter(this, interestedEvents);
-        lvInterestedEvents.setAdapter(eventAdapter);
+        osveziListu();
 
         // Otvaranje detalja dogadjaja
         lvInterestedEvents.setOnItemClickListener((parent, view, position, id) -> {
@@ -55,10 +52,12 @@ public class InterestedEventsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (eventAdapter != null) {
-            //Sada vucem sveze podatke za trenutnog korisnika
-            List<Event> updatedEvents = dbHelper.getEventsForUserByStatus(currentUserId, "ZAINTERESOVAN");
-            eventAdapter.setEvents(updatedEvents);
-        }
+        osveziListu();
+    }
+
+    private void osveziListu() {
+        List<Event> interestedEvents = dbHelper.getEventsForUserByStatus(currentUserId, "ZAINTERESOVAN");
+        eventAdapter = new EventAdapter(this, interestedEvents);
+        lvInterestedEvents.setAdapter(eventAdapter);
     }
 }

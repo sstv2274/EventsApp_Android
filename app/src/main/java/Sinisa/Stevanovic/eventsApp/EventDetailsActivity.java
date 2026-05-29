@@ -4,6 +4,8 @@ package Sinisa.Stevanovic.eventsApp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +14,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.json.JSONObject;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class EventDetailsActivity extends AppCompatActivity {
 
@@ -22,6 +29,11 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private DBHelper dbHelper;
     private int currentUserId;//Svaki user ima svoj ID
+
+    private String serverUserId;
+    private String serverEventId;
+    private String eventName = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +45,13 @@ public class EventDetailsActivity extends AppCompatActivity {
         String loggedInUser = sp.getString("LOGGED_IN_USER", "");
 
         currentUserId = dbHelper.getUserIdByUsername(loggedInUser);
+
+        SQLiteDatabase dbReadable = dbHelper.getReadableDatabase();
+        Cursor userCursor = dbReadable.query("users", new String[]{"server_id"}, "username=?", new String[]{loggedInUser}, null, null, null);
+        if (userCursor != null && userCursor.moveToFirst()) {
+            serverUserId = userCursor.getString(userCursor.getColumnIndexOrThrow("server_id"));
+            userCursor.close();
+        }
 
         // Povezivanje elemenata iz xml-a
         ivDetailsImage = findViewById(R.id.ivDetailsImage);
@@ -47,11 +66,17 @@ public class EventDetailsActivity extends AppCompatActivity {
         btnAttending = findViewById(R.id.btnAttending);
 
         //Preuzimanje imena event-a na koji smo kliknuli
-        String eventName = "";
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             eventName = extras.getString("EVENT_NAME", "");
         }
+
+        Cursor eventCursor = dbReadable.query("events", new String[]{"server_id"}, "naziv=?", new String[]{eventName}, null, null, null);
+        if (eventCursor != null && eventCursor.moveToFirst()) {
+            serverEventId = eventCursor.getString(eventCursor.getColumnIndexOrThrow("server_id"));
+            eventCursor.close();
+        }
+        dbReadable.close(); // Zatvaramo konekciju nakon što smo pokupili sve potrebne ID-jeve iz nje
 
         // Pronalazak iventa ali sada iz baze
         Event event = dbHelper.findEventByName(eventName);
@@ -82,34 +107,93 @@ public class EventDetailsActivity extends AppCompatActivity {
             }
         }
 
-        final String finalEventName = eventName;
-
         // Klik na dugme INTERESTED
         btnInterested.setOnClickListener(v -> {
-            boolean uspeh = dbHelper.handleAttendance(currentUserId, finalEventName, "ZAINTERESOVAN");
-            if (uspeh) {
-                Toast.makeText(this, R.string.toast_added_interested, Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, R.string.input_error, Toast.LENGTH_SHORT).show();
-            }
+            posaljiPrisustvoNaServer("ZAINTERESOVAN");
         });
 
         // Klik na dugme ATTENDING
         btnAttending.setOnClickListener(v -> {
-            boolean uspeh = dbHelper.handleAttendance(currentUserId, finalEventName, "PRISUSTVUJE");
-            if (uspeh) {
-                Toast.makeText(this, R.string.toast_added_attending, Toast.LENGTH_SHORT).show();
-
-                // Posto se broj mesta promenio u bazi, ponovo ucitaj event i osvezi UI tekst
-                Event azuriraniEvent = dbHelper.findEventByName(finalEventName);
-                if (azuriraniEvent != null && azuriraniEvent.isPromoted()) {
-                    osvezavanjeSlobodnihMesta(azuriraniEvent);
-                }
-            } else {
-                // Ako je handleAttendance vratio false, znaci da nema mesta
-                Toast.makeText(this, R.string.no_space, Toast.LENGTH_LONG).show();
-            }
+            posaljiPrisustvoNaServer("PRISUSTVUJE");
         });
+    }
+
+    private void posaljiPrisustvoNaServer(final String commitment) {
+        if (serverUserId == null || serverEventId == null) {
+            Toast.makeText(this, "Greška: Sinhronizacija serverskih ID-jeva nije uspela.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection urlConnection = null;
+                try {
+                    URL url = new URL("http://192.168.0.16:3000/attendance");
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("POST");
+                    urlConnection.setRequestProperty("Content-Type", "application/json");
+                    urlConnection.setDoOutput(true);
+
+                    JSONObject jsonBody = new JSONObject();
+                    jsonBody.put("userId", serverUserId);
+                    jsonBody.put("eventId", serverEventId);
+                    jsonBody.put("commitment", commitment);
+
+                    OutputStream os = urlConnection.getOutputStream();
+                    os.write(jsonBody.toString().getBytes("UTF-8"));
+                    os.flush();
+                    os.close();
+
+                    int responseCode = urlConnection.getResponseCode();
+
+                    if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED || responseCode == 201) {
+                        final boolean uspeh = dbHelper.handleAttendance(currentUserId, eventName, commitment);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (uspeh) {
+                                    if (commitment.equals("ZAINTERESOVAN")) {
+                                        Toast.makeText(EventDetailsActivity.this, R.string.toast_added_interested, Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(EventDetailsActivity.this, R.string.toast_added_attending, Toast.LENGTH_SHORT).show();
+
+                                        // Posto se broj mesta promenio u bazi, ponovo ucitaj event i osvezi UI tekst
+                                        Event azuriraniEvent = dbHelper.findEventByName(eventName);
+                                        if (azuriraniEvent != null && azuriraniEvent.isPromoted()) {
+                                            osvezavanjeSlobodnihMesta(azuriraniEvent);
+                                        }
+                                    }
+                                } else {
+                                    Toast.makeText(EventDetailsActivity.this, R.string.input_error, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    } else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Ako je handleAttendance vratio false, znaci da nema mesta
+                                Toast.makeText(EventDetailsActivity.this, R.string.no_space, Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(EventDetailsActivity.this, R.string.server_conn_error, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } finally {
+                    if (urlConnection != null) {
+                        urlConnection.disconnect();
+                    }
+                }
+            }
+        }).start();
     }
 
     //metoda za osvezavanje prikaza mesta da ne ponavljam isti kod
