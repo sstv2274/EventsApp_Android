@@ -235,7 +235,7 @@ public class LoginActivity extends AppCompatActivity {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Toast.makeText(LoginActivity.this, R.string.no_user, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(LoginActivity.this, R.string.yes_user, Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             } else {

@@ -170,7 +170,7 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             cursor.close();
         }
-
+        db.close();
         return isSuccess;
     }
     public void addInitialEvents(SQLiteDatabase db) {
