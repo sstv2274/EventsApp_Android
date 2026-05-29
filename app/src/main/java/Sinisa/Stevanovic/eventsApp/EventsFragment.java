@@ -17,6 +17,13 @@
     import androidx.fragment.app.Fragment;
 
     import java.util.List;
+    import org.json.JSONArray;
+    import org.json.JSONObject;
+    import java.io.BufferedReader;
+    import java.io.InputStreamReader;
+    import java.net.HttpURLConnection;
+    import java.net.URL;
+    import java.util.ArrayList;
 
     public class EventsFragment extends Fragment {
         //Deklaracija promenjivih
@@ -121,9 +128,10 @@
                     //Proveravamo da li je stisnuto sve.Ako jeste odna ispisujemo sve events sortirano a ako je nego drugo
                     //onda ispisujemo samo tu kategoriju sortirano
                     if (category.equals(categories[0])) { // "Sve" kategorija
-                        eventAdapter.setEvents(dbHelper.getAllEvents());
+                        preuzmiDogadjajeSaServera(null);
                     } else {
-                        eventAdapter.setEvents(dbHelper.getEventsByCategory(category));
+                        String serverCategoryParam = category.toUpperCase().replace(" ", "_");
+                        preuzmiDogadjajeSaServera(serverCategoryParam);
                     }
                 });
 
@@ -133,23 +141,111 @@
 
             }
         }
+
+        private void preuzmiDogadjajeSaServera(final String kategorijaParam){
+            Runnable getZadatak = new Runnable() {
+                @Override
+                public void run() {
+                    HttpURLConnection urlConnection = null;
+                    try{
+                        String urlString= "http://192.168.0.16:3000/events";
+                        if(kategorijaParam!=null){
+                            urlString += "/" + kategorijaParam;
+                        }
+
+                        URL url = new URL(urlString);
+                        urlConnection = (HttpURLConnection) url.openConnection();
+                        urlConnection.setRequestMethod("GET");
+                        urlConnection.setRequestProperty("Content-Type", "application/json");
+                        int responseCode=urlConnection.getResponseCode();
+
+                        if (responseCode==HttpURLConnection.HTTP_OK){
+                            BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                            StringBuilder sb= new StringBuilder();
+                            String line;
+                            while((line= br.readLine())!=null){
+                                sb.append(line);
+                            }
+                            br.close();
+
+                            JSONArray jsonArray = new JSONArray(sb.toString());
+                            for(int i=0;i<jsonArray.length();i++){
+                                JSONObject obj = jsonArray.getJSONObject(i);
+
+                                String serverId = obj.getString("_id");
+                                String name = obj.getString("name");
+                                String description = obj.optString("description", "");
+                                String location = obj.getString("location");
+                                String eventTime = obj.getString("eventTime");
+                                String category = obj.getString("category");
+                                boolean promoted = obj.optBoolean("promoted", false);
+                                int capacity = obj.optInt("capacity", 0);
+                                int attendees = obj.optInt("numberOfAttendees", 0);
+                                double avgRating = obj.optDouble("avgRating", 0.0);
+                                int ratingsCount = obj.optInt("numberOfRatings", 0);
+
+                                int promotedInt = promoted ? 1 : 0;
+
+                                dbHelper.syncEventFromServer(
+                                        serverId, name, description, location, eventTime, category,
+                                        promotedInt, capacity, attendees, avgRating, ratingsCount
+                                );
+
+                            }
+                            if(getActivity()!=null){
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (kategorijaParam == null) {
+                                            eventAdapter.setEvents(dbHelper.getAllEvents());
+                                        } else {
+
+                                            eventAdapter.setEvents(dbHelper.getEventsByCategory(kategorijaParam));
+                                        }
+                                    }
+                                });
+                            }
+                        }else {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getActivity(), R.string.server_error, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getActivity(), R.string.server_conn_error, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } finally {
+                        if (urlConnection != null) {
+                            urlConnection.disconnect();
+                        }
+                    }
+
+                }
+            };
+            new Thread(getZadatak).start();
+        }
         @Override
         public void onResume() {
             super.onResume();
-            if (eventAdapter != null) {
-                // ucitavam sve dogadjaje
-                eventAdapter.setEvents(dbHelper.getAllEvents());
+            preuzmiDogadjajeSaServera(null);
 
                 // I vracam dugmetu SVE da bude crno
-                if (categoryButtons != null && categoryButtons.length > 0) {
-                    for (int i = 0; i < categoryButtons.length; i++) {
-                        if (i == 0) {
-                            categoryButtons[i].setBackground(getRoundedShape(R.color.purple_button));
-                        } else {
-                            categoryButtons[i].setBackground(getRoundedShape(R.color.black));
-                        }
+            if (categoryButtons != null && categoryButtons.length > 0) {
+                for (int i = 0; i < categoryButtons.length; i++) {
+                    if (i == 0) {
+                        categoryButtons[i].setBackground(getRoundedShape(R.color.purple_button));
+                    } else {
+                        categoryButtons[i].setBackground(getRoundedShape(R.color.black));
                     }
                 }
             }
+
         }
     }

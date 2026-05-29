@@ -223,6 +223,43 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert("events", null, values);
     }
 
+    public void syncEventFromServer(String serverId, String naziv, String opis, String lokacija, String datum, String kategorija, int promoted, int kapacitet, int brojPrisutnih, double prosecnaOcena, int brojOcena) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("server_id", serverId);
+        values.put("naziv", naziv);
+        values.put("opis", opis);
+        values.put("lokacija", lokacija);
+        values.put("datumVreme", datum);
+        values.put("kategorija", kategorija);
+        values.put("promoted", promoted);
+        values.put("kapacitet", kapacitet);
+        values.put("brojPrisutnih", brojPrisutnih);
+        values.put("prosecnaOcena", prosecnaOcena);
+        values.put("brojOcena", brojOcena);
+
+        Cursor cursor = db.query("events", new String[]{"id"}, "server_id = ?", new String[]{serverId}, null, null, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            db.update("events", values, "server_id = ?", new String[]{serverId});
+            cursor.close();
+        } else {
+            if (cursor != null) cursor.close();
+
+            Cursor nameCursor = db.query("events", new String[]{"id"}, "naziv = ? AND server_id IS NULL", new String[]{naziv}, null, null, null);
+            if (nameCursor != null && nameCursor.moveToFirst()) {
+                db.update("events", values, "naziv = ? AND server_id IS NULL", new String[]{naziv});
+                nameCursor.close();
+            } else {
+                if (nameCursor != null) nameCursor.close();
+                values.put("imageResId", R.drawable.default_picture);
+                db.insert("events", null, values);
+            }
+        }
+        db.close();
+    }
+
     public long addEvent(String server, String naziv, String opis, String lokacija, String datum, String kategorija, int imageId, int promoted, int kapacitet) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -261,6 +298,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
         return eventList;
     }
+
+
 
     // Pomoćna metoda koja pretvara jedan red iz baze u Event objekat
     private Event cursorToEvent(Cursor cursor) {
