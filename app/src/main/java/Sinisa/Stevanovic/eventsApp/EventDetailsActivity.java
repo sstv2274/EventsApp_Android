@@ -120,7 +120,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private void posaljiPrisustvoNaServer(final String commitment) {
         if (serverUserId == null || serverEventId == null) {
-            Toast.makeText(this, "Greška: Sinhronizacija serverskih ID-jeva nije uspela.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.sync_unsuccessful, Toast.LENGTH_SHORT).show();
             return;
         }
 

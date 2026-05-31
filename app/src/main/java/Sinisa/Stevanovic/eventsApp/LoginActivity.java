@@ -133,8 +133,18 @@ public class LoginActivity extends AppCompatActivity {
                                 // Čitamo podatke uspešno ulogovanog korisnika sa servera
                                 JSONObject ulogovaniKorisnik = new JSONObject(sb.toString());
                                 String userEmail = ulogovaniKorisnik.getString("email");
-                                boolean isAdmin = ulogovaniKorisnik.getBoolean("isAdmin"); // Izvlačimo rolu
-
+                                boolean isAdmin = ulogovaniKorisnik.getBoolean("isAdmin");
+                                String serverId = ulogovaniKorisnik.getString("_id");
+                                int lokalniId = dbHelper.getUserIdByUsername(username);
+                                if (lokalniId == -1) {
+                                    dbHelper.registerUser(serverId, username, userEmail, password);
+                                } else {
+                                    SQLiteDatabase dbWritable = dbHelper.getWritableDatabase();
+                                    ContentValues cv = new ContentValues();
+                                    cv.put("server_id", serverId);
+                                    dbWritable.update("users", cv, "username=?", new String[]{username});
+                                    dbWritable.close();
+                                }
                                 // Obavezno vraćanje na UI nit pre prelaska na novi ekran
                                 runOnUiThread(new Runnable() {
                                     @Override

@@ -60,6 +60,7 @@ public class Event {
     public boolean isPast() {
         // Format dan/mesec/godina sati:minuti
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+        SimpleDateFormat sdf1 = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
         //zastita od pogresnog unosa datuma(Mora biti u formatu dd/MM/yyyy HH:mm kako bi pretvorilo u dobro vreme)
         try {
             Date eventDate = sdf.parse(this.dateTime);
@@ -68,8 +69,18 @@ public class Event {
                 return eventDate.before(currentDate);
             }
         } catch (ParseException e) {
-            e.printStackTrace();//!!//ispisuje gresku u konzolu. Ako dodam proveru pri unosenju datuma mogu ukloniti try/catch format.
+            try {
+                Date eventDate = sdf1.parse(this.dateTime);
+                Date currentDate = new Date(); // Trenutno sistemsko vreme
+                if (eventDate != null) {
+                    return eventDate.before(currentDate);
+                }
+            } catch (ParseException e1) {
+                e1.printStackTrace();//!!//ispisuje gresku u konzolu. Ako dodam proveru pri unosenju datuma mogu ukloniti try/catch format.
+            }
+            //e.printStackTrace();//!!//ispisuje gresku u konzolu. Ako dodam proveru pri unosenju datuma mogu ukloniti try/catch format.
         }
+
         return false;
     }
 

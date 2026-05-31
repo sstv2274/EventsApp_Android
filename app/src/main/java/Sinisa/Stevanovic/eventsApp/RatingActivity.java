@@ -10,6 +10,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONObject;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class RatingActivity extends AppCompatActivity {
 
     private TextView tvRatingEventName;
@@ -20,6 +25,9 @@ public class RatingActivity extends AppCompatActivity {
     private DBHelper dbHelper;
     private int currentUserId;
     private String eventName;
+
+    private String serverUserId;
+    private String serverEventId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +50,14 @@ public class RatingActivity extends AppCompatActivity {
         String loggedInUser = sp.getString("LOGGED_IN_USER", "");
         currentUserId = dbHelper.getUserIdByUsername(loggedInUser);
 
+        serverUserId = dbHelper.getServerUserIdByUsername(loggedInUser);
+
         // Preuzimanje imena dogadjaja preko intenta
         eventName = getIntent().getStringExtra("EVENT_NAME");
         if (eventName != null) {
             tvRatingEventName.setText(eventName);
+            //preuzimanje serverskog id-a
+            serverEventId = dbHelper.getServerEventIdByName(eventName);
 
             // Proveravam da li postoji ocena i ako postoji palim zvezdice(kako bi korisnik znao da je vec ocenio)
             int postojecaOcena = dbHelper.getUserRatingForEvent(currentUserId, eventName);
@@ -66,14 +78,15 @@ public class RatingActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.toast_select_rating, Toast.LENGTH_SHORT).show();
             } else {
                 //Upis u bazu
-                boolean uspeh = dbHelper.handleRating(currentUserId, eventName, selectedRating);
+                posaljiOcenuNaServer(selectedRating);
+                /*boolean uspeh = dbHelper.handleRating(currentUserId, eventName, selectedRating);
 
                 if (uspeh) {
                     Toast.makeText(this, R.string.toast_rating_saved, Toast.LENGTH_SHORT).show();
                     finish(); // Povratak na AttendingEventsActivity
                 } else {
                     Toast.makeText(this, R.string.input_error, Toast.LENGTH_SHORT).show();
-                }
+                }*/
             }
         });
     }
@@ -88,5 +101,81 @@ public class RatingActivity extends AppCompatActivity {
                 stars[i].setImageResource(R.drawable.star_empty);
             }
         }
+    }
+
+    private void posaljiOcenuNaServer(final int ratingValue){
+        if(serverUserId == null || serverEventId == null){
+            Toast.makeText(this,R.string.sync_unsuccessful,Toast.LENGTH_LONG).show();
+            return;
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection urlConnection = null;
+                try{
+                    URL url = new URL("http://192.168.0.16:3000/ratings");
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                    urlConnection.setRequestMethod("POST");
+                    urlConnection.setRequestProperty("Content-Type","application/json");
+                    urlConnection.setDoOutput(true);
+
+
+                    JSONObject jsonBody = new JSONObject();
+                    jsonBody.put("userId",serverUserId);
+                    jsonBody.put("eventId",serverEventId);
+                    jsonBody.put("rating",ratingValue);
+
+                    OutputStream os = urlConnection.getOutputStream();
+                    os.write(jsonBody.toString().getBytes("UTF-8"));
+                    os.flush();
+                    os.close();
+
+                    int responseCode= urlConnection.getResponseCode();
+
+                    if(responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED){
+                        final boolean uspeh= dbHelper.handleRating(currentUserId,eventName,ratingValue);
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (uspeh) {
+                                    Toast.makeText(RatingActivity.this, R.string.toast_rating_saved, Toast.LENGTH_SHORT).show();
+                                    finish(); // Povratak na AttendingEventsActivity
+                                } else {
+                                    Toast.makeText(RatingActivity.this, R.string.input_error, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }else if(responseCode == HttpURLConnection.HTTP_CONFLICT){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(RatingActivity.this, R.string.already_rated, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }else{
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(RatingActivity.this, R.string.server_error, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+
+                }catch(Exception e){
+                    e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(RatingActivity.this, R.string.server_conn_error, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }finally {
+                    if (urlConnection != null) {
+                        urlConnection.disconnect();
+                    }
+                }
+            }
+        }).start();
     }
 }

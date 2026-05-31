@@ -95,4 +95,6 @@
     <string name="server_error">Greska prilikom registracije na serveru</string>
     <string name="server_conn_error">Problem sa konekcijom na server</string>
     <string name="pristup_odbijen">Pristup odbijen! Samo admin moze kreirati dogadjaje</string>
+    <string name="sync_unsuccessful">Sinhronizacija sa serverom nije uspela</string>
+    <string name="already_rated">Vec ste ocenili</string>
 </resources>
