@@ -97,4 +97,7 @@
     <string name="pristup_odbijen">Pristup odbijen! Samo admin moze kreirati dogadjaje</string>
     <string name="sync_unsuccessful">Sinhronizacija sa serverom nije uspela</string>
     <string name="already_rated">Vec ste ocenili</string>
+    <string name="no_user_id">Korisnik sa ovim id-om na serveru ne postoji.</string>
+    <string name="friends_activity">Aktivnosti prijatelja</string>
+    <string name="no_friends_activity">Trenutno nema aktivnosti prijatelja na Vašim događajima.</string>
 </resources>

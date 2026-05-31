@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -11,7 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 public class EventsActivity extends AppCompatActivity {
 
     private TextView Username;
-    private Button Iventovi, MojiIventovi;
+    private Button Iventovi, MojiIventovi, Prijatelji;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +22,10 @@ public class EventsActivity extends AppCompatActivity {
         Username = findViewById(R.id.tvUsername);
         Iventovi = findViewById(R.id.btnNavEvents);
         MojiIventovi = findViewById(R.id.btnNavMyEvents);
+        Prijatelji = findViewById(R.id.btnNavFriends);
+
+        Prijatelji.setEnabled(true);
+        Prijatelji.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.purple_button));
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -40,6 +45,10 @@ public class EventsActivity extends AppCompatActivity {
 
         MojiIventovi.setOnClickListener(v -> {
             ucitajFragment(new MyEventsFragment());
+        });
+
+        Prijatelji.setOnClickListener(v -> {
+            ucitajFragment(new FriendsFragment());
         });
     }
 
