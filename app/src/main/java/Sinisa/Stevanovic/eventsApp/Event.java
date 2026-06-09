@@ -21,11 +21,13 @@ public class Event {
     private int attendingCount;
     private double averageRating;
     private int ratingCount;
+    private boolean isExclusive;
+    private String expirationTime;
 
     //Kontrukstor za Promoted dogadjaje
     public Event(String name, String description, String location, String dateTime,
                  String category, int imageResId, boolean isPromoted, int capacity,
-                 int attendingCount, double averageRating, int ratingCount) {
+                 int attendingCount, double averageRating, int ratingCount, boolean isExclusive,String expirationTime) {
         this.name = name;
         this.description = description;
         this.location = location;
@@ -37,12 +39,14 @@ public class Event {
         this.attendingCount = attendingCount;
         this.averageRating = averageRating;
         this.ratingCount = ratingCount;
+        this.isExclusive = isExclusive;
+        this.expirationTime = expirationTime;
     }
 
     //Konstruktor za regularne dogadjaje
     public Event(String name, String description, String location, String dateTime,
                  String category, int imageResId, int attendingCount,
-                 double averageRating, int ratingCount) {
+                 double averageRating, int ratingCount,boolean isExclusive,String expirationTime) {
         this.name = name;
         this.description = description;
         this.location = location;
@@ -54,6 +58,8 @@ public class Event {
         this.attendingCount = attendingCount;
         this.averageRating = averageRating;
         this.ratingCount = ratingCount;
+        this.isExclusive = isExclusive;
+        this.expirationTime =expirationTime;
     }
 
     //Metoda koja vraca da li je dogadjaj prosao
@@ -127,4 +133,9 @@ public class Event {
 
     public int getRatingCount() { return ratingCount; }
     public void setRatingCount(int ratingCount) { this.ratingCount = ratingCount; }
+    public boolean isExclusive() { return isExclusive; }
+    public void setExclusive(boolean exclusive) { isExclusive = exclusive; }
+
+    public String getExpirationTime() { return expirationTime; }
+    public void setExpirationTime(String expirationTime) { this.expirationTime = expirationTime; }
 }

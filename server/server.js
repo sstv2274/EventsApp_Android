@@ -30,7 +30,9 @@ const eventSchema = new mongoose.Schema({
     capacity: { type: Number, default: 0 },
     numberOfAttendees: { type: Number, default: 0 },
     avgRating: { type: Number, default: 0 },
-    numberOfRatings: { type: Number, default: 0 }
+    numberOfRatings: { type: Number, default: 0 },
+    isExclusive: {type: Boolean,default:false},
+    expirationTime: {type:String,default: ''}
 });
 const Event = mongoose.model('Event', eventSchema);
 
@@ -169,7 +171,9 @@ app.post('/events', async (req, res) => {
         const event = new Event({
             name, description, location, eventTime, category,
             promoted: promoted || false,
-            capacity: capacity || 0
+            capacity: capacity || 0,
+            isExclusive: isExclusive || false,
+            expirationTime: expirationTime || ''
         });
         await event.save();
         return res.json(event);

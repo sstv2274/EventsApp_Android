@@ -173,10 +173,10 @@ public class InterestedEventsActivity extends AppCompatActivity {
 
                                     Event event;
                                     if (isPromoted) {
-                                        event = new Event(name, desc, location, dateTime, category, imgResId, true, capacity, attendingCount, averageRating, ratingCount);
+                                        event = new Event(name, desc, location, dateTime, category, imgResId, true, capacity, attendingCount, averageRating, ratingCount,false,"");//menjano
                                         promotedEvents.add(event);
                                     } else {
-                                        event = new Event(name, desc, location, dateTime, category, imgResId, attendingCount, averageRating, ratingCount);
+                                        event = new Event(name, desc, location, dateTime, category, imgResId, attendingCount, averageRating, ratingCount,false,"");//Menjano
                                         regularEvents.add(event);
                                     }
                                 }

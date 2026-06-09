@@ -191,7 +191,7 @@ public class CreateEventActivity extends AppCompatActivity {
                             JSONObject kreiranDogadjaj = new JSONObject(sb.toString());
                             String serverId =kreiranDogadjaj.getString("_id");
 
-                            long newRowId = dbHelper.addEvent(serverId, name, desc, location, dateTime, category, R.drawable.default_picture, isPromotedInt, finalCapacity);
+                            long newRowId = dbHelper.addEvent(serverId, name, desc, location, dateTime, category, R.drawable.default_picture, isPromotedInt, finalCapacity,false,"");//Menjano
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {

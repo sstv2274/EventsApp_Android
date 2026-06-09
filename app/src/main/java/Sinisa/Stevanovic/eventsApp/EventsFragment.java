@@ -183,12 +183,14 @@
                                 int attendees = obj.optInt("numberOfAttendees", 0);
                                 double avgRating = obj.optDouble("avgRating", 0.0);
                                 int ratingsCount = obj.optInt("numberOfRatings", 0);
+                                boolean isExclusive = obj.optBoolean("isExclusive",false);//Menjao ovde
+                                String ExpirationTime = obj.optString("expirationTime","");//Menjao ovde
 
                                 int promotedInt = promoted ? 1 : 0;
 
                                 dbHelper.syncEventFromServer(
                                         serverId, name, description, location, eventTime, category,
-                                        promotedInt, capacity, attendees, avgRating, ratingsCount
+                                        promotedInt, capacity, attendees, avgRating, ratingsCount,isExclusive,ExpirationTime // Menjano
                                 );
 
                             }

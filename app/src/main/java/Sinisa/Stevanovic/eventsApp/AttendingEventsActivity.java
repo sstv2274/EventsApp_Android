@@ -159,9 +159,9 @@ public class AttendingEventsActivity extends AppCompatActivity {
 
                                     Event event;
                                     if (isPromoted) {
-                                        event = new Event(name, desc, location, dateTime, category, imgResId, true, capacity, attendingCount, averageRating, ratingCount);
+                                        event = new Event(name, desc, location, dateTime, category, imgResId, true, capacity, attendingCount, averageRating, ratingCount,false,"");//menjano
                                     } else {
-                                        event = new Event(name, desc, location, dateTime, category, imgResId, attendingCount, averageRating, ratingCount);
+                                        event = new Event(name, desc, location, dateTime, category, imgResId, attendingCount, averageRating, ratingCount,false,"");//menjano
                                     }
 
                                     if (event.isPast()) {

@@ -12,7 +12,7 @@ import java.util.List;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "EventsApp.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;//Nova verzija db-a
 
     private static final String CREATE_TABLE_USERS =
             "CREATE TABLE users (" +
@@ -33,6 +33,8 @@ public class DBHelper extends SQLiteOpenHelper {
                     "datumVreme TEXT NOT NULL, " +
                     "kategorija TEXT NOT NULL, " +
                     "imageResId INTEGER, " +
+                    "isExclusive INTEGER DEFAULT 0 CHECK(isExclusive IN (0, 1)), " +
+                    "expirationTime TEXT, " +
                     "promoted INTEGER DEFAULT 0 CHECK(promoted IN (0, 1)), " +
                     "kapacitet INTEGER DEFAULT 0 CHECK(kapacitet >= 0), " +
                     "brojPrisutnih INTEGER DEFAULT 0 CHECK(brojPrisutnih >= 0), " +
@@ -51,6 +53,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     "FOREIGN KEY(userId) REFERENCES users(id), " +
                     "FOREIGN KEY(eventId) REFERENCES events(id), " +
                     "UNIQUE(userId, eventId)" +
+
                     ");";
 
     private static final String CREATE_TABLE_RATINGS =
@@ -184,32 +187,32 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         if (count == 0) { // Ako je prazna, ubaci podatke
-            insertEvent(db,null, "Klen fishing Cup Loznica", "Varalicarenje klena", "Mali Zvornik, Drina", "20/06/2026 05:00", "FISHING", R.drawable.klen_cup_loznica, 1, 65);
-            insertEvent(db,null,  "Zimsko Smudjarenje Cup", "Dzigovanje smudja u ranoj zimi", "Futog,Dunav", "15/12/2025 07:00", "FISHING", R.drawable.zimsko_smudjarenje, 0, 0);
-            insertEvent(db,null,  "Skobaljijada Loznica", "Uzivanje na Drini", "Loznica,Drina, Zicina plaza", "10/06/2026 06:00", "FISHING", R.drawable.skobaljijada_loznica, 0, 0);
+            insertEvent(db,null, "Klen fishing Cup Loznica", "Varalicarenje klena", "Mali Zvornik, Drina", "20/06/2026 05:00", "FISHING", R.drawable.klen_cup_loznica, 1, 65,false,"");
+            insertEvent(db,null,  "Zimsko Smudjarenje Cup", "Dzigovanje smudja u ranoj zimi", "Futog,Dunav", "15/12/2025 07:00", "FISHING", R.drawable.zimsko_smudjarenje, 0, 0,false,"");
+            insertEvent(db,null,  "Skobaljijada Loznica", "Uzivanje na Drini", "Loznica,Drina, Zicina plaza", "10/06/2026 06:00", "FISHING", R.drawable.skobaljijada_loznica, 0, 0,false,"");
 
-            insertEvent(db,null,  "Rostilj i pivo u Velikoj reci", "Pecanje i odmor", "Vikendica na Drini", "01/05/2026 10:00", "NAPIVO", R.drawable.velika_reka, 0, 0);
-            insertEvent(db,null,  "Beer fest", "Testiranje piva", "Novi Sad,Master hala", "15/05/2026 18:00", "NAPIVO", R.drawable.beer_fest, 0, 0);
-            insertEvent(db,null,  "Degustacija Krafta", "Proba novih piva", "Pivoteka 77", "20/05/2026 20:00", "NAPIVO", R.drawable.kraft_piva, 0, 0);
-            insertEvent(db,null,  "Oktoberfest NS", "Veliki festival piva", "Novosadski sajam", "10/10/2026 12:00", "NAPIVO", R.drawable.novosadski_oktobarfest, 1, 5000);
+            insertEvent(db,null,  "Rostilj i pivo u Velikoj reci", "Pecanje i odmor", "Vikendica na Drini", "01/05/2026 10:00", "NAPIVO", R.drawable.velika_reka, 0, 0,false,"");
+            insertEvent(db,null,  "Beer fest", "Testiranje piva", "Novi Sad,Master hala", "15/05/2026 18:00", "NAPIVO", R.drawable.beer_fest, 0, 0,false,"");
+            insertEvent(db,null,  "Degustacija Krafta", "Proba novih piva", "Pivoteka 77", "20/05/2026 20:00", "NAPIVO", R.drawable.kraft_piva, 0, 0,false,"");
+            insertEvent(db,null,  "Oktoberfest NS", "Veliki festival piva", "Novosadski sajam", "10/10/2026 12:00", "NAPIVO", R.drawable.novosadski_oktobarfest, 1, 5000,false,"");
 
-            insertEvent(db,null,  "Brucosijada", "Zurka", "Dva Galeba", "15/10/2030 22:00", "PARTY", R.drawable.brucosijada, 0, 0);
-            insertEvent(db,null,  "Apsolventsko vece", "Proslava kraja studija", "Hotel Zvezda", "10/06/2027 21:00", "PARTY", R.drawable.apsolventsko_vece, 0, 0);
-            insertEvent(db,null,  "Gustiranje Duskove rakije", "Uzivo Sejo kalac i Minela", "Djukin stan", "25/05/2026 20:30", "PARTY", R.drawable.duskova_rakija, 0, 0);
-            insertEvent(db,null,  "Zurka 80-te", "Jaka muzika", "Gerila", "20/07/2026 21:00", "PARTY", R.drawable.zurka_80_te, 0, 0);
+            insertEvent(db,null,  "Brucosijada", "Zurka", "Dva Galeba", "15/10/2030 22:00", "PARTY", R.drawable.brucosijada, 0, 0,false,"");
+            insertEvent(db,null,  "Apsolventsko vece", "Proslava kraja studija", "Hotel Zvezda", "10/06/2027 21:00", "PARTY", R.drawable.apsolventsko_vece, 0, 0,false,"");
+            insertEvent(db,null,  "Gustiranje Duskove rakije", "Uzivo Sejo kalac i Minela", "Djukin stan", "25/05/2026 20:30", "PARTY", R.drawable.duskova_rakija, 0, 0,false,"");
+            insertEvent(db,null,  "Zurka 80-te", "Jaka muzika", "Gerila", "20/07/2026 21:00", "PARTY", R.drawable.zurka_80_te, 0, 0,false,"");
 
-            insertEvent(db,null,  "EXIT Festival", "Najveći muzički festival", "Petrovaradinska tvrđava", "09/07/2026 20:00", "FESTIVAL", R.drawable.exit, 1, 40000);
-            insertEvent(db,null,  "Beer Fest 2025", "Beogradski festival piva", "Ušće", "15/08/2025 18:00", "FESTIVAL", R.drawable.beer_fest2025, 0, 0);
-            insertEvent(db,null,  "Arsenal Fest", "Festival u Kragujevcu", "Knežev arsenal", "25/06/2026 19:00", "FESTIVAL", R.drawable.arsenal_fest, 0, 0);
-            insertEvent(db,null,  "LoveFest", "Festival elektronske muzike", "Vrnjačka Banja", "05/03/2026 20:00", "FESTIVAL", R.drawable.love_fest, 0, 0);
+            insertEvent(db,null,  "EXIT Festival", "Najveći muzički festival", "Petrovaradinska tvrđava", "09/07/2026 20:00", "FESTIVAL", R.drawable.exit, 1, 40000,false,"");
+            insertEvent(db,null,  "Beer Fest 2025", "Beogradski festival piva", "Ušće", "15/08/2025 18:00", "FESTIVAL", R.drawable.beer_fest2025, 0, 0,false,"");
+            insertEvent(db,null,  "Arsenal Fest", "Festival u Kragujevcu", "Knežev arsenal", "25/06/2026 19:00", "FESTIVAL", R.drawable.arsenal_fest, 0, 0,false,"");
+            insertEvent(db,null,  "LoveFest", "Festival elektronske muzike", "Vrnjačka Banja", "05/03/2026 20:00", "FESTIVAL", R.drawable.love_fest, 0, 0,false,"");
 
-            insertEvent(db,null,  "Posledni program tvog kompjutera", "Oprostajni kocnert DENIS&DENIS", "SKC Fabrika", "21/03/2026 21:00", "CONCERT", R.drawable.poslednji_program, 0, 0);
-            insertEvent(db,null,  "Bajaga i Instruktori", "Mid", "Spens", "30/05/2026 21:00", "CONCERT", R.drawable.bajaga, 1, 10000);
-            insertEvent(db,null,  "Tap011", "Negde u daljini jedna reka protice", "Plato Tekstila", "05/05/2026 21:00", "CONCERT", R.drawable.tap011, 0, 0);
+            insertEvent(db,null,  "Posledni program tvog kompjutera", "Oprostajni kocnert DENIS&DENIS", "SKC Fabrika", "21/03/2026 21:00", "CONCERT", R.drawable.poslednji_program, 0, 0,false,"");
+            insertEvent(db,null,  "Bajaga i Instruktori", "Mid", "Spens", "30/05/2026 21:00", "CONCERT", R.drawable.bajaga, 1, 10000,false,"");
+            insertEvent(db,null,  "Tap011", "Negde u daljini jedna reka protice", "Plato Tekstila", "05/05/2026 21:00", "CONCERT", R.drawable.tap011, 0, 0,false,"");
         }
 
     }
-    private void insertEvent(SQLiteDatabase db, String server, String naziv, String opis, String lokacija, String datum, String kategorija, int imageId, int promoted, int kapacitet) {
+    private void insertEvent(SQLiteDatabase db, String server, String naziv, String opis, String lokacija, String datum, String kategorija, int imageId, int promoted, int kapacitet,boolean isExclusive,String ExpirationTime) {
         ContentValues values = new ContentValues();
         values.put("naziv", naziv);
         values.put("server_id", server);
@@ -220,10 +223,12 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put("imageResId", imageId);
         values.put("promoted", promoted);
         values.put("kapacitet", kapacitet);
+        values.put("isExclusive",isExclusive);
+        values.put("expirationTime",ExpirationTime);
         db.insert("events", null, values);
     }
-
-    public void syncEventFromServer(String serverId, String naziv, String opis, String lokacija, String datum, String kategorija, int promoted, int kapacitet, int brojPrisutnih, double prosecnaOcena, int brojOcena) {
+    //Menjao ovde
+    public void syncEventFromServer(String serverId, String naziv, String opis, String lokacija, String datum, String kategorija, int promoted, int kapacitet, int brojPrisutnih, double prosecnaOcena, int brojOcena,boolean isExclusive,String ExpirationTime) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -238,6 +243,8 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put("brojPrisutnih", brojPrisutnih);
         values.put("prosecnaOcena", prosecnaOcena);
         values.put("brojOcena", brojOcena);
+        values.put("isExclusive",isExclusive);
+        values.put("expirationTime",ExpirationTime);
 
         Cursor cursor = db.query("events", new String[]{"id"}, "server_id = ?", new String[]{serverId}, null, null, null);
 
@@ -260,7 +267,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public long addEvent(String server, String naziv, String opis, String lokacija, String datum, String kategorija, int imageId, int promoted, int kapacitet) {
+    public long addEvent(String server, String naziv, String opis, String lokacija, String datum, String kategorija, int imageId, int promoted, int kapacitet,boolean isExclusive,String ExpirationTime) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -273,6 +280,8 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put("imageResId", imageId);
         values.put("promoted", promoted);
         values.put("kapacitet", kapacitet);
+        values.put("isExclusive",isExclusive);
+        values.put("expirationTime",ExpirationTime);
 
         long id = db.insert("events", null, values);
 
@@ -314,11 +323,13 @@ public class DBHelper extends SQLiteOpenHelper {
         int attendingCount = cursor.getInt(cursor.getColumnIndexOrThrow("brojPrisutnih"));
         double averageRating = cursor.getDouble(cursor.getColumnIndexOrThrow("prosecnaOcena"));
         int ratingCount = cursor.getInt(cursor.getColumnIndexOrThrow("brojOcena"));
+        boolean isExclusive = cursor.getInt(cursor.getColumnIndexOrThrow("isExclusive")) == 1;
+        String expirationTime = cursor.getString(cursor.getColumnIndexOrThrow("expirationTime"));
 
         if (isPromoted) {
-            return new Event(name, desc, location, dateTime, category, imageResId, true, capacity, attendingCount, averageRating, ratingCount);
+            return new Event(name, desc, location, dateTime, category, imageResId, true, capacity, attendingCount, averageRating, ratingCount,isExclusive,expirationTime);//menjano
         } else {
-            return new Event(name, desc, location, dateTime, category, imageResId, attendingCount, averageRating, ratingCount);
+            return new Event(name, desc, location, dateTime, category, imageResId, attendingCount, averageRating, ratingCount,isExclusive,expirationTime);//menjano
         }
     }
 
