@@ -158,7 +158,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 public void run() {
                     HttpURLConnection urlConnection = null;
                     try{
-                        URL url = new URL("http://192.168.0.16:3000/events");
+                        URL url = new URL("http://192.168.0.14:3000/events");
                         urlConnection = (HttpURLConnection) url.openConnection();
                         urlConnection.setRequestMethod("POST");
                         urlConnection.setRequestProperty("Content-Type", "application/json");

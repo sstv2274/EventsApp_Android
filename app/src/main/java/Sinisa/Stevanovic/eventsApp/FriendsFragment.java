@@ -69,7 +69,7 @@ public class FriendsFragment extends Fragment {
             public void run() {
                 HttpURLConnection urlConnection = null;
                 try {
-                    URL url = new URL("http://192.168.0.16:3000/friends-activity/" + serverUserId);
+                    URL url = new URL("http://192.168.0.14:3000/friends-activity/" + serverUserId);
                     urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestMethod("GET");
                     urlConnection.setRequestProperty("Content-Type", "application/json");

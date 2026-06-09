@@ -43,7 +43,7 @@ public class PasswordActivity extends AppCompatActivity {
                     public void run() {
                         HttpURLConnection urlConnection = null;
                         try {
-                            URL url = new URL("http://192.168.0.16:3000/password");
+                            URL url = new URL("http://192.168.0.14:3000/password");
                             urlConnection = (HttpURLConnection) url.openConnection();
                             urlConnection.setRequestMethod("PUT");
                             urlConnection.setRequestProperty("Content-Type", "application/json");

@@ -106,7 +106,7 @@ public class RatingActivity extends AppCompatActivity {
             public void run() {
                 HttpURLConnection urlConnection = null;
                 try {
-                    URL url = new URL("http://192.168.0.16:3000/ratings/" + serverUserId + "/" + serverEventId);
+                    URL url = new URL("http://192.168.0.14:3000/ratings/" + serverUserId + "/" + serverEventId);
                     urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestMethod("GET");
                     urlConnection.setRequestProperty("Content-Type", "application/json");
@@ -169,7 +169,7 @@ public class RatingActivity extends AppCompatActivity {
             public void run() {
                 HttpURLConnection urlConnection = null;
                 try{
-                    URL url = new URL("http://192.168.0.16:3000/ratings");
+                    URL url = new URL("http://192.168.0.14:3000/ratings");
                     urlConnection = (HttpURLConnection) url.openConnection();
 
 

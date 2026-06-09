@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void run() {
                         HttpURLConnection urlConnection = null;
                         try {
-                            URL url = new URL("http://192.168.0.16:3000/login");
+                            URL url = new URL("http://192.168.0.14:3000/login");
                             urlConnection = (HttpURLConnection) url.openConnection();
                             urlConnection.setRequestMethod("POST");
                             urlConnection.setRequestProperty("Content-Type", "application/json");
@@ -200,7 +200,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void run() {
                         HttpURLConnection urlConnection = null;
                         try{
-                            URL url = new URL("http://192.168.0.16:3000/users");
+                            URL url = new URL("http://192.168.0.14:3000/users");
                             urlConnection = (HttpURLConnection) url.openConnection();
                             urlConnection.setRequestMethod("POST");
                             urlConnection.setRequestProperty("Content-Type", "application/json");

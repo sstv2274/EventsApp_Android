@@ -148,7 +148,7 @@
                 public void run() {
                     HttpURLConnection urlConnection = null;
                     try{
-                        String urlString= "http://192.168.0.16:3000/events";
+                        String urlString= "http://192.168.0.14:3000/events";
                         if(kategorijaParam!=null){
                             urlString += "/" + kategorijaParam;
                         }

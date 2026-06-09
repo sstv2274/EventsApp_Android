@@ -82,7 +82,7 @@ public class InterestedEventsActivity extends AppCompatActivity {
             public void run() {
                 HttpURLConnection urlConnection = null;
                 try {
-                    URL url = new URL("http://192.168.0.16:3000/attendance/" + serverUserId);
+                    URL url = new URL("http://192.168.0.14:3000/attendance/" + serverUserId);
                     urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestMethod("GET");
                     urlConnection.setRequestProperty("Content-Type", "application/json");
@@ -100,8 +100,6 @@ public class InterestedEventsActivity extends AppCompatActivity {
 
                         JSONArray jsonArray = new JSONArray(sb.toString());
                         List<Event> interestedEvents = new ArrayList<>();
-
-                        // MENJANO: Kreiramo dve odvojene podliste za razvrstavanje sponzorisanih i običnih
                         List<Event> promotedEvents = new ArrayList<>();
                         List<Event> regularEvents = new ArrayList<>();
 

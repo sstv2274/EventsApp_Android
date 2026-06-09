@@ -60,7 +60,7 @@ public class AttendingEventsActivity extends AppCompatActivity {
     // Da ne pisem 2 puta isti ko, pomocna metoda za osvezavanje liste,bukvalno je isto
     private void osveziListu() {
         if (serverUserId == null) {
-            Toast.makeText(this, "Greška: Serverski ID korisnika nije pronađen.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.no_user, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -69,7 +69,7 @@ public class AttendingEventsActivity extends AppCompatActivity {
             public void run() {
                 HttpURLConnection urlConnection = null;
                 try {
-                    URL url = new URL("http://192.168.0.16:3000/attendance/" + serverUserId);
+                    URL url = new URL("http://192.168.0.14:3000/attendance/" + serverUserId);
                     urlConnection = (HttpURLConnection) url.openConnection();
                     urlConnection.setRequestMethod("GET");
                     urlConnection.setRequestProperty("Content-Type", "application/json");
@@ -199,7 +199,7 @@ public class AttendingEventsActivity extends AppCompatActivity {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    PrikazGreske("Izuzetak: " + e.getMessage());
+                    PrikazGreske(e.getMessage());
                 } finally {
                     if (urlConnection != null) {
                         urlConnection.disconnect();
