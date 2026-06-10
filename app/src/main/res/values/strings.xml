@@ -100,4 +100,10 @@
     <string name="no_user_id">Korisnik sa ovim id-om na serveru ne postoji.</string>
     <string name="friends_activity">Aktivnosti prijatelja</string>
     <string name="no_friends_activity">Trenutno nema aktivnosti prijatelja na Vašim događajima.</string>
+    <string name="pecanje">Pecanje</string>
+    <string name="ovo_je_ekskluziva">Ovaj Event je ekskluzivan i prijave traju samo 5 minuta.</string>
+    <string name="hidden_location">Skriveno selo lista</string>
+    <string name="new_exclusive_event">Novi ekskluzivni dogadjaj: </string>
+    <string name="pet_minuta">Imas samo 5 minuta da se prijavis</string>
+    <string name="channel_exclusive_name">Ekskluzivni Dogadjaji</string>
 </resources>
