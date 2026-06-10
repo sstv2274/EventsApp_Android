@@ -108,4 +108,6 @@
     <string name="channel_exclusive_name">Ekskluzivni Dogadjaji</string>
     <string name="btn_closed_text">Zatvoreno</string>
     <string name="toast_window_closed">Prozor za prijavu na ovaj događaj je zatvoren!</string>
+    <string name="notification_closed_title">Prozor za prijavu zatvoren!</string>
+    <string name="notification_closed_text">Prijave za \"%s\" su završene. Sledeća prilika vas očekuje za 24h.</string>
 </resources>

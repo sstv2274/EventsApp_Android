@@ -71,8 +71,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
 
-        Intent serviceIntent = new Intent(this, ExclusiveEventService.class);
-        startService(serviceIntent);
+
 
         dbHelper = new DBHelper(this);
         //napuniMongoDBBazuKonstanta();

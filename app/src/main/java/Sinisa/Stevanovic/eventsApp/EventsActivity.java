@@ -1,5 +1,6 @@
 package Sinisa.Stevanovic.eventsApp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,6 +18,8 @@ public class EventsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent serviceIntent = new Intent(this, ExclusiveEventService.class);
+        startService(serviceIntent);
         setContentView(R.layout.activity_events);
 
         Username = findViewById(R.id.tvUsername);

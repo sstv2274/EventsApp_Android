@@ -27,7 +27,7 @@ public class ExclusiveEventService extends Service {
     private Thread serviceThread;
 
     //Za sad okidam na 2 minute umesto na 24h za testiranje
-    private static final long INTERVAL = 2000 * 60 * 1000;
+    private static final long INTERVAL = 2 * 60 * 1000;
     //5m=5*60*1000ms
     private static final long EXCLUSIVE_WINDOW = 2 * 60 * 1000;
     private static final String CHANNEL_ID = "ExclusiveEventChannel";
@@ -136,6 +136,18 @@ public class ExclusiveEventService extends Service {
                 editor.apply();
 
                 sendNotification(eventName);
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(EXCLUSIVE_WINDOW);
+                            sendExpirationNotification(eventName);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
             }
             conn.disconnect();
         } catch (Exception e) {
@@ -162,6 +174,18 @@ public class ExclusiveEventService extends Service {
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
 
         mgr.notify((int) System.currentTimeMillis(), builder.build());
+    }
+    private void sendExpirationNotification(String eventName) {
+        NotificationManager mgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.default_picture)
+                .setContentTitle(getString(R.string.notification_closed_title))
+                .setContentText(String.format(getString(R.string.notification_closed_text), eventName))
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
+
+         mgr.notify((int) System.currentTimeMillis(), builder.build());
     }
 
     private void createNotificationChannel() {
