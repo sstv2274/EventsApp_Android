@@ -106,4 +106,6 @@
     <string name="new_exclusive_event">Novi ekskluzivni dogadjaj: </string>
     <string name="pet_minuta">Imas samo 5 minuta da se prijavis</string>
     <string name="channel_exclusive_name">Ekskluzivni Dogadjaji</string>
+    <string name="btn_closed_text">Zatvoreno</string>
+    <string name="toast_window_closed">Prozor za prijavu na ovaj događaj je zatvoren!</string>
 </resources>

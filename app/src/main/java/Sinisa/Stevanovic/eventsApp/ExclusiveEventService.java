@@ -27,9 +27,9 @@ public class ExclusiveEventService extends Service {
     private Thread serviceThread;
 
     //Za sad okidam na 2 minute umesto na 24h za testiranje
-    private static final long INTERVAL = 2 * 60 * 1000;
+    private static final long INTERVAL = 2000 * 60 * 1000;
     //5m=5*60*1000ms
-    private static final long EXCLUSIVE_WINDOW = 1 * 60 * 1000;
+    private static final long EXCLUSIVE_WINDOW = 2 * 60 * 1000;
     private static final String CHANNEL_ID = "ExclusiveEventChannel";
 
     @Override
@@ -104,7 +104,32 @@ public class ExclusiveEventService extends Service {
             int responseCode = conn.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED || responseCode == 201) {
 
-                //Vreme isteka se cuva u SharedPreferences
+                java.io.BufferedReader br = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
+                StringBuilder sb = new StringBuilder();
+                String responseLine;
+                while ((responseLine = br.readLine()) != null) {
+                    sb.append(responseLine);
+                }
+                br.close();
+
+                JSONObject kreiraniEvent = new JSONObject(sb.toString());
+                String serverId = kreiraniEvent.getString("_id");
+
+                DBHelper dbHelper = new DBHelper(ExclusiveEventService.this);
+                dbHelper.addEvent(
+                        serverId,
+                        eventName,
+                        getString(R.string.ovo_je_ekskluziva),
+                        getString(R.string.hidden_location),
+                        eventTime,
+                        "PARTY",
+                        R.drawable.default_picture,
+                        1,
+                        50,
+                        true,
+                        expirationTimeStr
+                );
+
                 SharedPreferences sp = getSharedPreferences("ExclusiveEventsPrefs", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sp.edit();
                 editor.putLong(eventName, expirationTimeMillis);

@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Locale;
 
 public class EventDetailsActivity extends AppCompatActivity {
 
@@ -29,7 +30,6 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private DBHelper dbHelper;
     private int currentUserId;//Svaki user ima svoj ID
-
     private String serverUserId;
     private String serverEventId;
     private String eventName = "";
@@ -89,7 +89,6 @@ public class EventDetailsActivity extends AppCompatActivity {
             tvDetailsLocation.setText(event.getLocation());
             tvDetailsDateTime.setText(event.getDateTime());
             tvDetailsDescription.setText(event.getDescription());
-
             // Provera kapaciteta (Osvežava se iz baze!)
             if (event.isPromoted()) {
                 tvDetailsFreeSpots.setVisibility(View.VISIBLE);
@@ -97,7 +96,6 @@ public class EventDetailsActivity extends AppCompatActivity {
             } else {
                 tvDetailsFreeSpots.setVisibility(View.GONE);
             }
-
             // Ispis rejtinga
             if (event.getRatingCount() == 0) {
                 tvDetailsRating.setText(getString(R.string.no_rating));
@@ -105,8 +103,54 @@ public class EventDetailsActivity extends AppCompatActivity {
                 String ratingText = getString(R.string.rating_format, event.getAverageRating(), event.getRatingCount());
                 tvDetailsRating.setText(ratingText);
             }
-        }
 
+
+            SharedPreferences exclusiveSp = getSharedPreferences("ExclusiveEventsPrefs", Context.MODE_PRIVATE);
+            long expirationTime = exclusiveSp.getLong(eventName, 0);
+
+
+            if (expirationTime > 0 || event.isExclusive()) {
+
+
+                if (expirationTime == 0 && event.getExpirationTime() != null && !event.getExpirationTime().isEmpty()) {
+                    try {
+                        expirationTime = Long.parseLong(event.getExpirationTime());
+                    } catch (NumberFormatException e) {
+                        expirationTime = 0;
+                    }
+                }
+
+                long preostaloVreme = expirationTime - System.currentTimeMillis();
+
+                if (preostaloVreme <= 0) {
+
+                    btnAttending.setEnabled(false);
+                    btnAttending.setText(getString(R.string.btn_closed_text));
+                } else {
+
+                    new android.os.CountDownTimer(preostaloVreme, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            long minuti = (millisUntilFinished / 1000) / 60;
+                            long sekunde = (millisUntilFinished / 1000) % 60;
+
+                            String uslovniTekst = getString(R.string.btn_attending_text) +
+                                    String.format(Locale.getDefault(), " (%02d:%02d)", minuti, sekunde);
+                            btnAttending.setText(uslovniTekst);
+                        }
+
+                        @Override
+                        public void onFinish() {
+
+                            btnAttending.setEnabled(false);
+                            btnAttending.setText(getString(R.string.btn_closed_text));
+                            Toast.makeText(EventDetailsActivity.this, R.string.toast_window_closed, Toast.LENGTH_LONG).show();
+                        }
+                    }.start();
+                }
+            }
+
+        }
         // Klik na dugme INTERESTED
         btnInterested.setOnClickListener(v -> {
             posaljiPrisustvoNaServer("ZAINTERESOVAN");
@@ -174,7 +218,6 @@ public class EventDetailsActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                // Ako je handleAttendance vratio false, znaci da nema mesta
                                 Toast.makeText(EventDetailsActivity.this, R.string.no_space, Toast.LENGTH_LONG).show();
                             }
                         });
@@ -196,7 +239,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         }).start();
     }
 
-    //metoda za osvezavanje prikaza mesta da ne ponavljam isti kod
     private void osvezavanjeSlobodnihMesta(Event event) {
         int slobodnaMesta = event.getCapacity() - event.getAttendingCount();
         String freeSpotsText = getString(R.string.free_spots_format, slobodnaMesta, event.getCapacity());

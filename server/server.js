@@ -167,14 +167,20 @@ app.put('/password', async (req, res) => {
  */
 app.post('/events', async (req, res) => {
     try {
-        const { name, description, location, eventTime, category, promoted, capacity } = req.body;
+        const { name, description, location, eventTime, category, promoted, capacity, isExclusive, expirationTime } = req.body;
+        
         const event = new Event({
-            name, description, location, eventTime, category,
+            name, 
+            description, 
+            location, 
+            eventTime, 
+            category,
             promoted: promoted || false,
             capacity: capacity || 0,
             isExclusive: isExclusive || false,
             expirationTime: expirationTime || ''
         });
+        
         await event.save();
         return res.json(event);
     } catch (err) {
